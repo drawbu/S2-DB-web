@@ -1,5 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
-const index = parseInt(urlParams.get('id'));
+const index = urlParams.has('id') ? parseInt(urlParams.get('id')) : 1;
 
 document.querySelector('img#main').src = `./images/image${index}.jpg`
 document.querySelector('p.description').textContent = `Image ${index}`
