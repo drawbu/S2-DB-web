@@ -1,0 +1,167 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+
+  --main-color-rgb: 252, 163, 17;
+  --monospace-font: "JetBrains Mono", "Space Mono", monospace;
+}
+
+body {
+  display: flex;
+}
+
+main {
+  margin: auto;
+  width: 800px;
+  padding-top: 16px;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: normal;
+  align-items: start;
+}
+
+a {
+  color: cornflowerblue;
+  text-decoration: underline transparent 2px;
+}
+
+a:hover {
+  text-decoration-color: cornflowerblue;
+}
+
+a.button {
+  margin: 16px;
+  box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px #00ffc0;
+  padding: 12px;
+  min-width: 160px;
+  text-transform: uppercase;
+  color: black;
+  transition-duration: .2s;
+  text-decoration: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--monospace-font);
+}
+
+a.button:hover {
+  background-color: #00ffc0;
+  box-shadow: 0 0 0 2px #00ffc0, 2px 2px 0 2px #00ffc0
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+}
+
+.buttons.center {
+  justify-content: center;
+}
+
+h1,
+h1 > * {
+  margin-bottom: 32px;
+  text-align: center;
+  width: 100%;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: var(--monospace-font);
+}
+
+/* Homepage */
+h1.homepage {
+  text-align: center;
+  font-size: 48px;
+}
+
+h1.homepage > span {
+  font-size: 32px;
+}
+
+
+/* All images page */
+.images-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  wrap-option: 3w;
+}
+
+.images-container > .img {
+  flex: 0 0 33%;
+  text-align: center;
+}
+
+.images-container > .img > img {
+  cursor: pointer;
+}
+
+
+/* Error page */
+.error {
+  margin: auto;
+  text-align: center;
+  max-width: 400px;
+}
+
+.error > p.code {
+  font-size: 180px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-family: var(--monospace-font);
+}
+
+.error > p.message {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  font-family: var(--monospace-font);
+}
+
+.error > p.description {
+  margin-bottom: 32px;
+}
+
+
+/* Single image page */
+.image {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image > img#main {
+  height: 500px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.image > p.description {
+  text-align: center;
+  font-size: 32px;
+  text-transform: uppercase;
+  font-family: var(--monospace-font);
+}
+
+.images-navigator {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.images-navigator > a > .image-wrapper{
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.images-navigator > a > .image-wrapper > img {
+  height: 100px;
+}
