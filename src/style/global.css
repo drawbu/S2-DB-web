@@ -3,7 +3,7 @@
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
 
-  --main-color-rgb: 252, 163, 17;
+  --main-color: #00ffc0;
   --monospace-font: "JetBrains Mono", "Space Mono", monospace;
 }
 
@@ -34,7 +34,7 @@ a:hover {
 
 a.button {
   margin: 16px;
-  box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px #00ffc0;
+  box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px var(--main-color);
   padding: 12px;
   min-width: 160px;
   text-transform: uppercase;
@@ -48,8 +48,8 @@ a.button {
 }
 
 a.button:hover {
-  background-color: #00ffc0;
-  box-shadow: 0 0 0 2px #00ffc0, 2px 2px 0 2px #00ffc0
+  background-color: var(--main-color);
+  box-shadow: 0 0 0 2px var(--main-color), 2px 2px 0 2px var(--main-color)
 }
 
 .buttons {
@@ -74,18 +74,18 @@ h1 > * {
 }
 
 /* Homepage */
-h1.homepage {
+main > h1.homepage {
   text-align: center;
   font-size: 48px;
 }
 
-h1.homepage > span {
+main > h1.homepage > span {
   font-size: 32px;
 }
 
 
 /* All images page */
-.images-container {
+main > .images-container {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -94,31 +94,31 @@ h1.homepage > span {
   wrap-option: 3w;
 }
 
-.images-container > .img {
+main > .images-container > .img {
   flex: 0 0 33%;
   text-align: center;
 }
 
-.images-container > .img > img {
+main > .images-container > .img > img {
   cursor: pointer;
 }
 
 
 /* Error page */
-.error {
+main > .error {
   margin: auto;
   text-align: center;
   max-width: 400px;
 }
 
-.error > p.code {
+main > .error > p.code {
   font-size: 180px;
   font-weight: bold;
   margin-bottom: 16px;
   font-family: var(--monospace-font);
 }
 
-.error > p.message {
+main > .error > p.message {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 16px;
@@ -126,42 +126,42 @@ h1.homepage > span {
   font-family: var(--monospace-font);
 }
 
-.error > p.description {
+main > .error > p.description {
   margin-bottom: 32px;
 }
 
 
 /* Single image page */
-.image {
+main > .image {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.image > img#main {
+main > .image > img#main {
   height: 500px;
   max-width: 100%;
   margin: auto;
 }
 
-.image > p.description {
+main > .image > p.description {
   text-align: center;
   font-size: 32px;
   text-transform: uppercase;
   font-family: var(--monospace-font);
 }
 
-.images-navigator {
+main > .images-navigator {
   display: flex;
   width: 100%;
   justify-content: space-between;
 }
 
-.images-navigator > a > .image-wrapper{
+main > .images-navigator > a > .image-wrapper{
   max-height: 100px;
   max-width: 100px;
 }
 
-.images-navigator > a > .image-wrapper > img {
+main > .images-navigator > a > .image-wrapper > img {
   height: 100px;
 }
