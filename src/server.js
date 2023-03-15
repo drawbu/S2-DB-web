@@ -12,9 +12,56 @@ server.on('request', (req, res) => {
     return;
   }
 
-  if (req.url.startsWith('/image') && !req.url.startsWith('/images')) {
-    const index = fs.readFileSync('./pages/image.html');
-    res.end(index);
+  if (req.url.startsWith('/image') && !req.url.startsWith('/images/')) {
+    const index = parseInt(
+      req.url.replace('/image', '')
+             .replace('.html', '')
+    )
+
+    let HTMLPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/global.css">
+  <title>Clément Boillot - TP2</title>
+</head>
+<body>
+  <main>
+    <a href="/" class="button">Accueil</a>
+    <div class="image">
+      <img src="./images/image${index}.jpg" alt="Image ${index}">
+      <p class="description">Image ${index}</p>
+    </div>
+    <div class="images-navigator">`
+
+    if (fs.existsSync(`./images/image${index - 1}.jpg`)) {
+      HTMLPage += `
+      <a href="/image${index - 1}">
+        <img src="./images/image${index - 1}_small.jpg" alt="Image ${index - 1}">
+      </a>`
+    } else {
+      HTMLPage += `
+      <div></div>`
+    }
+
+    if (fs.existsSync(`./images/image${index + 1}.jpg`)) {
+      HTMLPage += `
+      <a href="/image${index + 1}">
+        <img src="./images/image${index + 1}_small.jpg" alt="Image ${index + 1}">
+      </a>`
+    } else {
+      HTMLPage += `
+      <div></div>`
+    }
+
+    HTMLPage += `
+    </div>
+  </main>
+</body>
+</html>`
+    res.end(HTMLPage);
     return;
   }
 
@@ -26,7 +73,7 @@ server.on('request', (req, res) => {
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../style/global.css">
+  <link rel="stylesheet" href="./style/global.css">
   <title>Clément Boillot - All Images</title>
 </head>
 <body>
@@ -37,20 +84,12 @@ server.on('request', (req, res) => {
     </div>
     <div class="images-container">`
 
-    // for (let i = 1; fs.existsSync(`/images/image${i}.jpg`); i++)
-    fs.readdirSync("./images").sort().forEach(img => {
-      if (img.endsWith("_small.jpg"))
-        return;
-
-      const index = parseInt(
-        img.replace(".jpg", "")
-           .replace("image", "")
-      );
+    for (let i = 1; fs.existsSync(`./images/image${i}.jpg`); i++) {
       HTMLPage += `
-      <a href="/image?id=${index}" class="img">
-        <img src="../images/image${index}_small.jpg">
+      <a href="/image${i}" class="img">
+        <img src="./images/image${i}_small.jpg" alt="Image ${i}">
       </a>`;
-    })
+    }
 
     HTMLPage += `
     </div>

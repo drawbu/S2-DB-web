@@ -4,7 +4,7 @@
   font-family: Arial, Helvetica, sans-serif;
 
   --main-color: #00ffc0;
-  --monospace-font: "JetBrains Mono", "Space Mono", monospace;
+  --monospace-font: "JetBrains Mono", ui-monospace, Monaco, Consolas, monospace;
 }
 
 body {
@@ -99,7 +99,7 @@ main > .images-container > .img {
   text-align: center;
 }
 
-main > .images-container > .img > img {
+main > .images-container > a.img {
   cursor: pointer;
 }
 
@@ -138,13 +138,13 @@ main > .image {
   flex-direction: column;
 }
 
-main > .image > img#main {
+main > .image > img {
   height: 500px;
   max-width: 100%;
   margin: auto;
 }
 
-main > .image > p.description {
+main > .image > p {
   text-align: center;
   font-size: 32px;
   text-transform: uppercase;
@@ -157,11 +157,6 @@ main > .images-navigator {
   justify-content: space-between;
 }
 
-main > .images-navigator > a > .image-wrapper{
-  max-height: 100px;
-  max-width: 100px;
-}
-
-main > .images-navigator > a > .image-wrapper > img {
+main > .images-navigator > a > img {
   height: 100px;
 }
