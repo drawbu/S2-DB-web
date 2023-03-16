@@ -103,33 +103,37 @@ server.on('request', (req, res) => {
             <h1>Mur d'images</h1>
             <div class="buttons">
               <a href="/" class="button">accueil</a>
-              <a href="/image-description.html" class="button">Ajouter une description</a>
+              <a href="/image-description" class="button">Ajouter une description</a>
             </div>
             <div class="images-container">`
 
-      const images = fs.readdirSync('./images/');
-      let j = -1;
-      for (let i = 0; i < images.length; i++) {
-        if (images[i].endsWith('_small.jpg')) {
-          if (j === -1) {
-            HTMLPage += `<div>`;
-            j = 0;
-          }
+      let indexInRow = 0;
+      for (let i = 1; fs.existsSync(`./images/image${i}.jpg`); i++) {
+        const image = {
+          normal: `./images/image${i}.jpg`,
+          small: `./images/image${i}_small.jpg`,
+          pageUrl: `/image${i}`,
+          desc: descriptions[i],
+        }
+        image.alt = (descriptions[i] !== undefined) ? `Image ${i}` : descriptions[i];
 
-          const fullImageURL = (
-            images[i].replace('.jpg', '')
-              .replace('_small', '')
-          )
-
-          HTMLPage += `
-            <a href="/${fullImageURL}">
-              <img src="./images/${images[i]}" alt="An image">
-            </a>`;
-          j++;
+        if (indexInRow === 0) {
+          HTMLPage += `<div>`;
         }
 
-        if (j === 3 || (j !== -1 && i === images.length)) {
-          j = -1;
+        HTMLPage += `
+          <span>
+            <a href="${image.pageUrl}">
+              <img src="${image.small}" alt="${image.desc}">
+            </a>`
+        if (image.desc !== undefined) {
+          HTMLPage += `<p>${image.desc}</p>`
+        }
+        HTMLPage += `</span>`
+
+        indexInRow++;
+        if (indexInRow === 3 || !fs.existsSync(`./images/image${i + 1}.jpg`)) {
+          indexInRow = 0;
           HTMLPage += `</div>`;
         }
       }

@@ -87,22 +87,16 @@ main > h1.homepage > span {
 /* All images page */
 main > .images-container {
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  wrap-option: 3w;
 }
 
-main > .images-container > .img {
-  flex: 0 0 33%;
+main > .images-container > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+main > .images-container > div > span > p {
   text-align: center;
 }
-
-main > .images-container > a.img {
-  cursor: pointer;
-}
-
 
 /* Error page */
 main > .error {
