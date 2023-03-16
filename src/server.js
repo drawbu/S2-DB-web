@@ -23,6 +23,11 @@ server.on('request', (req, res) => {
       file = fs.readFileSync(filename);
     }
     res.end(file);
+  } else if (fs.existsSync(`./pages${req.url}`)) {
+    /* /hello.html --> ./pages/hello.html if the file exists */
+
+    const file = fs.readFileSync(`./pages${req.url}`, 'utf-8');
+    res.end(file);
   } else if (fs.existsSync(`./pages${req.url}.html`)) {
     /* /hello --> ./pages/hello.html if the file exists */
 
