@@ -88,6 +88,12 @@ main > h1.homepage > span {
   font-size: 32px;
 }
 
+main > .img-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
 
 /* All images page */
 main > .images-container {
