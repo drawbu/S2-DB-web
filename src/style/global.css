@@ -32,7 +32,9 @@ a:hover {
   text-decoration-color: cornflowerblue;
 }
 
-a.button {
+a.button,
+input[type=submit].button {
+  all: unset;
   margin: 16px;
   box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px var(--main-color);
   padding: 12px;
@@ -47,7 +49,8 @@ a.button {
   font-family: var(--monospace-font);
 }
 
-a.button:hover {
+a.button:hover,
+input.button:hover {
   background-color: var(--main-color);
   box-shadow: 0 0 0 2px var(--main-color), 2px 2px 0 2px var(--main-color)
 }
@@ -164,4 +167,18 @@ main > .images-navigator {
 
 main > .images-navigator > a > img {
   height: 100px;
+}
+
+
+/* Image description form */
+main > form {
+  margin: 100px auto auto;
+  width: 200px;
+  display: grid;
+}
+
+main > form > input[type=text],
+main > form > input[type=number] {
+  padding: 6px;
+  margin-bottom: 16px;
 }

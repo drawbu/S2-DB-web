@@ -15,13 +15,23 @@
       <a href="/all-images" class="button">Mur d'images</a>
     </div>
     <form action ="/image-description" method ="post">
-      <label> Numéro de l'image
-        <input type="number" name="index">
-      </label>
-      <label> Description
-        <input type="text" name="description">
-      </label>
-      <input type="submit" value="Envoyer">
+      <label for="index">Numéro de l'image :</label>
+      <input
+          type="number"
+          name="index"
+          id="index"
+          placeholder="Entez le numéro"
+      >
+
+      <label for="description">Description :</label>
+      <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Entez une description"
+      >
+
+      <input type="submit" value="Envoyer" class="button">
     </form>
   </main>
 </body>
