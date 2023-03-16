@@ -84,21 +84,30 @@ server.on('request', (req, res) => {
     </div>
     <div class="images-container">`
 
-    const images = fs.readdirSync('./images/')
+    const images = fs.readdirSync('./images/');
     let j = -1;
     for (let i = 0; i < images.length; i++) {
       if (images[i].endsWith('_small.jpg')) {
         if (j === -1) {
-          HTMLPage += `<div>`
+          HTMLPage += `<div>`;
           j = 0;
         }
-        HTMLPage += `<img src="./images/${images[i]}" alt="An image">`;
+
+        const fullImageURL = (
+           images[i].replace('.jpg', '')
+                    .replace('_small', '')
+        )
+
+        HTMLPage += `
+          <a href="/${fullImageURL}">
+            <img src="./images/${images[i]}" alt="An image">
+          </a>`;
         j++;
       }
 
       if (j === 3 || (j !== -1 && i === images.length)) {
-        j = -1;
-        HTMLPage += `</div>`
+        j = -1;;
+        HTMLPage += `</div>`;
       }
     }
 
@@ -113,7 +122,7 @@ server.on('request', (req, res) => {
 
   let filename = `.${req.url}`
 
-  /* e.g: /error == /pages/error.html */
+  /* e.g: /error ==> /pages/error.html */
   if (fs.existsSync(`./pages${req.url}.html`)) {
     filename = `./pages${req.url}.html`;
   }
