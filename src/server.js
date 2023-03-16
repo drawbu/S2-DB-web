@@ -102,21 +102,21 @@ server.on('request', (req, res) => {
 
   let filename = `.${req.url}`
 
-  if (fs.existsSync(`./pages${req.url}.html`))
+  /* e.g: /error == /pages/error.html */
+  if (fs.existsSync(`./pages${req.url}.html`)) {
     filename = `./pages${req.url}.html`;
-
-  if (!fs.existsSync(filename)) {
-    if (fs.existsSync(`./pages${req.url}.html`)) {
-      filename = `./pages${req.url}.html`;
-    } else {
-      res.writeHead(302, {
-        location: "/error"
-      });
-      res.end();
-      return;
-    }
   }
 
+  /* If file/path does not exist, redirect to /error */
+  if (!fs.existsSync(filename)) {
+    res.writeHead(302, {
+      location: '/error'
+    });
+    res.end();
+    return;
+  }
+
+  /* Open the file with the corresponding format */
   let file;
   if (filename.endsWith('.html') || filename.endsWith('.css')) {
     file = fs.readFileSync(filename, 'utf-8');
