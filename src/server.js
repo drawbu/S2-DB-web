@@ -7,12 +7,30 @@ const server = http.createServer();
 
 server.on('request', (req, res) => {
   if (req.url === '/') {
-    const index = fs.readFileSync('./pages/index.html');
-    res.end(index);
-    return;
-  }
+    /* / is the index and display the content of ./index/index.html */
 
-  if (req.url.startsWith('/image') && !req.url.startsWith('/images/')) {
+    const index = fs.readFileSync('./pages/index.html', 'utf-8');
+    res.end(index);
+  } else if (fs.existsSync(`.${req.url}`)) {
+    /* /bar/foo.css --> ./bar/foo.html if the file exists */
+
+    const filename = `.${req.url}`
+    let file;
+
+    if (filename.endsWith('.html') || filename.endsWith('.css')) {
+      file = fs.readFileSync(filename, 'utf-8');
+    } else {
+      file = fs.readFileSync(filename);
+    }
+    res.end(file);
+  } else if (fs.existsSync(`./pages${req.url}.html`)) {
+    /* /hello --> ./pages/hello.html if the file exists */
+
+    const file = fs.readFileSync(`./pages${req.url}.html`, 'utf-8');
+    res.end(file)
+  } else if (req.url.startsWith('/image')) {
+    /* /imageN shows a unique pas for the image ./images/imageN.jpg */
+
     const index = parseInt(
       req.url.replace('/image', '')
              .replace('.html', '')
@@ -62,10 +80,9 @@ server.on('request', (req, res) => {
 </body>
 </html>`
     res.end(HTMLPage);
-    return;
-  }
+  } else if (req.url === '/all-images') {
+    /* /all-images display all the stored images in ./images */
 
-  if (req.url === '/all-images') {
     let HTMLPage = `
 <!DOCTYPE html>
 <html lang="fr">
@@ -106,7 +123,7 @@ server.on('request', (req, res) => {
       }
 
       if (j === 3 || (j !== -1 && i === images.length)) {
-        j = -1;;
+        j = -1;
         HTMLPage += `</div>`;
       }
     }
@@ -117,33 +134,14 @@ server.on('request', (req, res) => {
 </body>
 </html>`;
     res.end(HTMLPage);
-    return;
-  }
+  } else {
+    /* If file/path does not exist, redirect to /error */
 
-  let filename = `.${req.url}`
-
-  /* e.g: /error ==> /pages/error.html */
-  if (fs.existsSync(`./pages${req.url}.html`)) {
-    filename = `./pages${req.url}.html`;
-  }
-
-  /* If file/path does not exist, redirect to /error */
-  if (!fs.existsSync(filename)) {
     res.writeHead(302, {
       location: '/error'
     });
     res.end();
-    return;
   }
-
-  /* Open the file with the corresponding format */
-  let file;
-  if (filename.endsWith('.html') || filename.endsWith('.css')) {
-    file = fs.readFileSync(filename, 'utf-8');
-  } else {
-    file = fs.readFileSync(filename);
-  }
-  res.end(file);
 })
 
 server.listen(port, host, () => {
