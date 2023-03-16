@@ -57,6 +57,11 @@ a.button:hover {
   display: flex;
   flex-direction: row;
   margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.buttons.center {
+  justify-content: center;
 }
 
 .buttons.center {
