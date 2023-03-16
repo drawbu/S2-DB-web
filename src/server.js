@@ -43,6 +43,8 @@ server.on('request', (req, res) => {
           .replace('.html', '')
       )
 
+      const description = (descriptions[index]) ? descriptions[index] : `Image ${index}`
+
       let HTMLPage = `<!DOCTYPE html>
         <html lang="fr">
         <head>
@@ -56,8 +58,8 @@ server.on('request', (req, res) => {
           <main>
             <a href="/" class="button">Accueil</a>
             <div class="image">
-              <img src="./images/image${index}.jpg" alt="Image ${index}">
-              <p class="description">Image ${index}</p>
+              <img src="./images/image${index}.jpg" alt="${description}">
+              <p class="description">${description}</p>
             </div>
             <div class="images-navigator">`
 
@@ -114,8 +116,8 @@ server.on('request', (req, res) => {
           small: `./images/image${i}_small.jpg`,
           pageUrl: `/image${i}`,
           desc: descriptions[i],
+          name: `Image ${i}`,
         }
-        image.alt = (descriptions[i] !== undefined) ? `Image ${i}` : descriptions[i];
 
         if (indexInRow === 0) {
           HTMLPage += `<div>`;
@@ -124,9 +126,9 @@ server.on('request', (req, res) => {
         HTMLPage += `
           <span>
             <a href="${image.pageUrl}">
-              <img src="${image.small}" alt="${image.desc}">
+              <img src="${image.small}" alt="${(image.desc) ? image.desc : image.name}">
             </a>`
-        if (image.desc !== undefined) {
+        if (image.desc) {
           HTMLPage += `<p>${image.desc}</p>`
         }
         HTMLPage += `</span>`
