@@ -84,11 +84,22 @@ server.on('request', (req, res) => {
     </div>
     <div class="images-container">`
 
-    for (let i = 1; fs.existsSync(`./images/image${i}.jpg`); i++) {
-      HTMLPage += `
-      <a href="/image${i}" class="img">
-        <img src="./images/image${i}_small.jpg" alt="Image ${i}">
-      </a>`;
+    const images = fs.readdirSync('./images/')
+    let j = -1;
+    for (let i = 0; i < images.length; i++) {
+      if (images[i].endsWith('_small.jpg')) {
+        if (j === -1) {
+          HTMLPage += `<div>`
+          j = 0;
+        }
+        HTMLPage += `<img src="./images/${images[i]}" alt="An image">`;
+        j++;
+      }
+
+      if (j === 3 || (j !== -1 && i === images.length)) {
+        j = -1;
+        HTMLPage += `</div>`
+      }
     }
 
     HTMLPage += `
