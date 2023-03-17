@@ -11,12 +11,12 @@ server.on('request', (req, res) => {
     if (req.url === '/') {
       /* / is the index and display the content of ./index/index.html */
 
-      const index = fs.readFileSync('./pages/index.html', 'utf-8');
+      const index = fs.readFileSync('./public/index.html', 'utf-8');
       res.end(index);
     } else if (fs.existsSync(`.${req.url}`)) {
-      /* /bar/foo.css --> ./bar/foo.html if the file exists */
+      /* /bar/foo.html --> renders ./bar/foo.html, if the file exists */
 
-      const filename = `.${req.url}`
+      const filename = `.${req.url}`;
       let file;
 
       if (filename.endsWith('.html') || filename.endsWith('.css')) {
@@ -25,25 +25,20 @@ server.on('request', (req, res) => {
         file = fs.readFileSync(filename);
       }
       res.end(file);
-    } else if (fs.existsSync(`./pages${req.url}`)) {
-      /* /hello.html --> ./pages/hello.html if the file exists */
+    } else if (fs.existsSync(`./public${req.url}.html`)) {
+      /* /foo_bar --> renders ./public/foo_bar.html, if the file exists */
 
-      const file = fs.readFileSync(`./pages${req.url}`, 'utf-8');
+      const file = fs.readFileSync(`./public${req.url}.html`, 'utf-8');
       res.end(file);
-    } else if (fs.existsSync(`./pages${req.url}.html`)) {
-      /* /hello --> ./pages/hello.html if the file exists */
-
-      const file = fs.readFileSync(`./pages${req.url}.html`, 'utf-8');
-      res.end(file)
     } else if (req.url.startsWith('/image')) {
-      /* /imageN shows a unique pas for the image ./images/imageN.jpg */
+      /* /imageN shows a unique page for the image number N */
 
       const index = parseInt(
         req.url.replace('/image', '')
-          .replace('.html', '')
-      )
+               .replace('.html', '')
+      );
 
-      const description = (descriptions[index]) ? descriptions[index] : `Image ${index}`
+      const description = (descriptions[index]) ? descriptions[index] : `Image ${index}`;
 
       let HTMLPage = `<!DOCTYPE html>
         <html lang="fr">
@@ -51,44 +46,44 @@ server.on('request', (req, res) => {
           <meta charset="UTF-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="./style/global.css">
+          <link rel="stylesheet" href="./public/style.css">
           <title>Clément Boillot - TP2</title>
         </head>
         <body>
           <main>
             <a href="/" class="button">Accueil</a>
             <div class="image">
-              <img src="./images/image${index}.jpg" alt="${description}">
+              <img src="./public/images/image${index}.jpg" alt="${description}">
               <p class="description">${description}</p>
             </div>
-            <div class="images-navigator">`
+            <div class="images-navigator">`;
 
-      if (fs.existsSync(`./images/image${index - 1}.jpg`)) {
+      if (fs.existsSync(`./public/images/image${index - 1}.jpg`)) {
         HTMLPage += `
           <a href="/image${index - 1}">
-            <img src="./images/image${index - 1}_small.jpg" alt="Image ${index - 1}">
-          </a>`
+            <img src="./public/images/image${index - 1}_small.jpg" alt="Image ${index - 1}">
+          </a>`;
       } else {
-        HTMLPage += `<div></div>`
+        HTMLPage += `<div></div>`;
       }
 
-      if (fs.existsSync(`./images/image${index + 1}.jpg`)) {
+      if (fs.existsSync(`./public/images/image${index + 1}.jpg`)) {
         HTMLPage += `
           <a href="/image${index + 1}">
-            <img src="./images/image${index + 1}_small.jpg" alt="Image ${index + 1}">
-          </a>`
+            <img src="./public/images/image${index + 1}_small.jpg" alt="Image ${index + 1}">
+          </a>`;
       } else {
-        HTMLPage += `<div></div>`
+        HTMLPage += `<div></div>`;
       }
 
       HTMLPage += `
             </div>
           </main>
         </body>
-        </html>`
+        </html>`;
       res.end(HTMLPage);
     } else if (req.url === '/all-images') {
-      /* /all-images display all the stored images in ./images */
+      /* /all-images display all the stored images in ./public/images */
 
       let HTMLPage = `
         <!DOCTYPE html>
@@ -97,7 +92,7 @@ server.on('request', (req, res) => {
           <meta charset="UTF-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="./style/global.css">
+          <link rel="stylesheet" href="./public/style.css">
           <title>Clément Boillot - All Images</title>
         </head>
         <body>
@@ -107,17 +102,17 @@ server.on('request', (req, res) => {
               <a href="/" class="button">accueil</a>
               <a href="/image-description" class="button">Ajouter une description</a>
             </div>
-            <div class="images-container">`
+            <div class="images-container">`;
 
       let indexInRow = 0;
-      for (let i = 1; fs.existsSync(`./images/image${i}.jpg`); i++) {
+      for (let i = 1; fs.existsSync(`./public/images/image${i}.jpg`); i++) {
         const image = {
-          normal: `./images/image${i}.jpg`,
-          small: `./images/image${i}_small.jpg`,
+          normal: `./public/images/image${i}.jpg`,
+          small: `./public/images/image${i}_small.jpg`,
           pageUrl: `/image${i}`,
           desc: descriptions[i],
           name: `Image ${i}`,
-        }
+        };
 
         if (indexInRow === 0) {
           HTMLPage += `<div>`;
@@ -127,14 +122,14 @@ server.on('request', (req, res) => {
           <span>
             <a href="${image.pageUrl}">
               <img src="${image.small}" alt="${(image.desc) ? image.desc : image.name}">
-            </a>`
+            </a>`;
         if (image.desc) {
-          HTMLPage += `<p>${image.desc}</p>`
+          HTMLPage += `<p>${image.desc}</p>`;
         }
-        HTMLPage += `</span>`
+        HTMLPage += `</span>`;
 
         indexInRow++;
-        if (indexInRow === 3 || !fs.existsSync(`./images/image${i + 1}.jpg`)) {
+        if (indexInRow === 3 || !fs.existsSync(`./public/images/image${i + 1}.jpg`)) {
           indexInRow = 0;
           HTMLPage += `</div>`;
         }
@@ -149,14 +144,35 @@ server.on('request', (req, res) => {
     } else {
       /* If file/path does not exist, redirect to /error */
 
-      res.writeHead(302, {
-        location: '/error'
-      });
-      res.end();
+      const HTMLPage = `
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" href="./public/style.css">
+          <title>Clément Boillot - Error 404</title>
+        </head>
+        <body>
+          <main>
+            <div class="error">
+              <p class="code">404</p>
+              <p class="message">Page non trouvé</p>
+              <p class="description">
+                La page ou fichier "${req.url}" n'a pas été trouvé. <br>
+                Elle a surement été renommée ou supprimée et est temporairement indisponible.
+              </p>
+              <a href="/" class="button">Accueil</a>
+            </div>
+          </main>
+        </body>
+        </html>`;
+      res.end(HTMLPage);
     }
   } else if (req.method === "POST") {
     if (req.url === '/image-description') {
-      /* Get values sent from the form on ./pages/image-description.html */
+      /* Get values sent from the form on ./public/image-description.html */
 
       let donnees = '';
       req.on("data", (data) => {
@@ -176,7 +192,7 @@ server.on('request', (req, res) => {
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="./style/global.css">
+            <link rel="stylesheet" href="./public/style.css">
             <title>Clément Boillot - Description ajoutée</title>
           </head>
           <body>

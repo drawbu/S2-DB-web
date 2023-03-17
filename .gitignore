@@ -6,4 +6,4 @@
 .DS_Store
 
 # Temporay files
-src/tmp/
+public/tmp/
