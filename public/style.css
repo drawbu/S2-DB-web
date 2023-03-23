@@ -7,20 +7,30 @@
   --monospace-font: "JetBrains Mono", ui-monospace, Monaco, Consolas, monospace;
 }
 
-body {
+body > #app {
+  margin: auto;
+  width: 800px;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
 }
 
 main {
-  margin: auto;
-  width: 800px;
+  flex: 1;
   padding-top: 16px;
 
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: normal;
   align-items: start;
+}
+
+footer {
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+footer p {
+  text-align: center;
 }
 
 a {

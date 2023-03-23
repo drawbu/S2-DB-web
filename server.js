@@ -40,23 +40,13 @@ server.on('request', (req, res) => {
 
       const description = (descriptions[index]) ? descriptions[index] : `Image ${index}`;
 
-      let HTMLPage = `<!DOCTYPE html>
-        <html lang="fr">
-        <head>
-          <meta charset="UTF-8">
-          <meta http-equiv="X-UA-Compatible" content="IE=edge">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="./public/style.css">
-          <title>Clément Boillot - TP2</title>
-        </head>
-        <body>
-          <main>
-            <a href="/" class="button">Accueil</a>
-            <div class="image">
-              <img src="./public/images/image${index}.jpg" alt="${description}">
-              <p class="description">${description}</p>
-            </div>
-            <div class="images-navigator">`;
+      let HTMLPage = `
+        <a href="/" class="button">Accueil</a>
+        <div class="image">
+          <img src="./public/images/image${index}.jpg" alt="${description}">
+          <p class="description">${description}</p>
+        </div>
+        <div class="images-navigator">`;
 
       if (fs.existsSync(`./public/images/image${index - 1}.jpg`)) {
         HTMLPage += `
@@ -75,34 +65,16 @@ server.on('request', (req, res) => {
       } else {
         HTMLPage += `<div></div>`;
       }
-
-      HTMLPage += `
-            </div>
-          </main>
-        </body>
-        </html>`;
-      res.end(HTMLPage);
+      res.end(createPage(HTMLPage));
     } else if (req.url === '/all-images') {
       /* /all-images display all the stored images in ./public/images */
 
       let HTMLPage = `
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-          <meta charset="UTF-8">
-          <meta http-equiv="X-UA-Compatible" content="IE=edge">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="./public/style.css">
-          <title>Clément Boillot - All Images</title>
-        </head>
-        <body>
-          <main>
-            <h1>Mur d'images</h1>
-            <div class="buttons center">
-              <a href="/" class="button">accueil</a>
-              <a href="/image-description" class="button">Ajouter une description</a>
-            </div>
-            <div class="images-container">`;
+        <div class="buttons center">
+          <a href="/" class="button">accueil</a>
+          <a href="/image-description" class="button">Ajouter une description</a>
+        </div>
+        <div class="images-container">`;
 
       let indexInRow = 0;
       for (let i = 1; fs.existsSync(`./public/images/image${i}.jpg`); i++) {
@@ -134,43 +106,23 @@ server.on('request', (req, res) => {
           HTMLPage += `</div>`;
         }
       }
-
-      HTMLPage += `
-            </div>
-          </main>
-        </body>
-        </html>`;
-      res.end(HTMLPage);
+      res.end(createPage(HTMLPage, 'Mur d\'images'));
     } else {
       /* If file/path does not exist, redirect to /error */
 
       const HTMLPage = `
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-          <meta charset="UTF-8">
-          <meta http-equiv="X-UA-Compatible" content="IE=edge">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="./public/style.css">
-          <title>Clément Boillot - Error 404</title>
-        </head>
-        <body>
-          <main>
-            <div class="error">
-              <p class="code">404</p>
-              <p class="message">Page non trouvé</p>
-              <p class="description">
-                La page ou fichier "${req.url}" n'a pas été trouvé. <br>
-                Elle a surement été renommée ou supprimée et est temporairement indisponible.
-              </p>
-              <a href="/" class="button">Accueil</a>
-            </div>
-          </main>
-        </body>
-        </html>`;
-      res.end(HTMLPage);
+        <div class="error">
+          <p class="code">404</p>
+          <p class="message">Page non trouvé</p>
+          <p class="description">
+            La page ou fichier "${req.url}" n'a pas été trouvé. <br>
+            Elle a surement été renommée ou supprimée et est temporairement indisponible.
+          </p>
+          <a href="/" class="button">Accueil</a>
+        </div>`;
+      res.end(createPage(HTMLPage));
     }
-  } else if (req.method === "POST") {
+  } else if (req.method === 'POST') {
     if (req.url === '/image-description') {
       /* Get values sent from the form on ./public/image-description.html */
 
@@ -186,32 +138,47 @@ server.on('request', (req, res) => {
         descriptions[index] = description;
         res.statusCode = 200;
 
-        let HTMLPage = `<!DOCTYPE html>
-          <html lang="fr">
-          <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="./public/style.css">
-            <title>Clément Boillot - Description ajoutée</title>
-          </head>
-          <body>
-            <main>
-              <h1>Commentaire ajouté!</h1>
-              <div class="buttons center">
-                <a href="/" class="button">Accueil</a>
-                <a href="/all-images" class="button">Mur d'images</a>
-              </div>
-              <p>Le commentaire "${description}" a été rajouté à l'image numéro ${index}.</p>        
-            </main>
-          </body>
-          </html>`
-
-        res.end(HTMLPage);
+        let HTMLPage = `
+          <div class="buttons center">
+            <a href="/" class="button">Accueil</a>
+            <a href="/all-images" class="button">Mur d'images</a>
+          </div>
+          <p>Le commentaire "${description}" a été rajouté à l'image numéro ${index}.</p>`
+        res.end(createPage(HTMLPage, 'Description ajoutée'));
       })
     }
   }
 })
+
+function createPage(content, title) {
+  return `<!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="./public/style.css">
+      <title>Clément Boillot - ${title}</title>
+    </head>
+    <body>
+      <div id="app">
+        <main>
+          ${title? `<h1>${title}</h1>` : ''}
+          
+         ${content}
+         
+        </main>
+        <footer>
+          <p>
+            Site créé par <a href="https://github.com/drawbu">Clément Boillot</a> 
+            dans le cadre du cours de “Développement Web et bases de données” à 
+            <a href="https://www.u-bordeaux.fr">l'Université de Bordeaux</a>.
+          </p>
+        </footer>
+      </div>
+    </body>
+    </html>`;
+}
 
 server.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}/`);
