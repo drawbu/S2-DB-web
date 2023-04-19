@@ -134,18 +134,7 @@ server.on('request', async (req, res) => {
       }
     } else {
       /* If file/path does not exist, redirect to /error */
-
-      const HTMLPage = `
-        <div class="error">
-          <p class="code">404</p>
-          <p class="message">Page non trouvé</p>
-          <p class="description">
-            La page ou fichier "${req.url}" n'a pas été trouvé. <br>
-            Elle a surement été renommée ou supprimée et est temporairement indisponible.
-          </p>
-          <a href="/" class="button">Accueil</a>
-        </div>`;
-      res.end(createPage(HTMLPage));
+      res.end(create404ErrorPage(req.url));
     }
   } else if (req.method === 'POST') {
     if (req.url === '/image-description') {
@@ -203,6 +192,27 @@ function createPage(content, title) {
       </div>
     </body>
     </html>`;
+}
+
+function create404ErrorPage(url) {
+  return createErrorPage(
+    404,
+    `La page ou fichier "${url}" n'a pas été trouvé. <br>
+    Elle a surement été renommée ou supprimée et est temporairement indisponible.`
+  );
+}
+
+function createErrorPage(error, message) {
+  const HTMLPage = `
+    <div class="error">
+      <p class="code">${error}</p>
+      <p class="message">Page non trouvé</p>
+      <p class="description">
+        ${message}
+      </p>
+      <a href="/" class="button">Accueil</a>
+    </div>`;
+  return createPage(HTMLPage);
 }
 
 server.listen(port, host, () => {
