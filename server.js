@@ -87,70 +87,36 @@ server.on('request', async (req, res) => {
         HTMLPage += `<div></div>`;
       }
       res.end(createPage(HTMLPage));
-    } else if (req.url === '/all-images') {
-      /* /all-images display all the stored images in ./public/images */
+    } else if (req.url === '/all-images' || req.url === '/mur-images') {
+      /*
+      /all-images
+      /mur-images
 
-      let HTMLPage = `
-        <div class="buttons center">
-          <a href="/" class="button">accueil</a>
-          <a href="/image-description" class="button">Ajouter une description</a>
-        </div>
-        <div class="images-container">`;
+      Displays all the stored images in ./public/images as a grid.
+      */
 
-      let indexInRow = 0;
-      for (let i = 1; fs.existsSync(`./public/images/image${i}.jpg`); i++) {
-        const image = {
-          normal: `./public/images/image${i}.jpg`,
-          small: `./public/images/image${i}_small.jpg`,
-          pageUrl: `/image${i}`,
-          desc: descriptions[i],
-          name: `Image ${i}`,
-        };
-
-        if (indexInRow === 0) {
-          HTMLPage += `<div>`;
-        }
-
-        HTMLPage += `
-          <span>
-            <a href="${image.pageUrl}">
-              <img src="${image.small}" alt="${(image.desc) ? image.desc : image.name}">
-            </a>`;
-        if (image.desc) {
-          HTMLPage += `<p>${image.desc}</p>`;
-        }
-        HTMLPage += `</span>`;
-
-        indexInRow++;
-        if (indexInRow === 3 || !fs.existsSync(`./public/images/image${i + 1}.jpg`)) {
-          indexInRow = 0;
-          HTMLPage += `</div>`;
-        }
-      }
-      res.end(createPage(HTMLPage, 'Mur d\'images'));
-    } else if (req.url === '/mur-images') {
       try {
-        const sqlQuery = 'SELECT fichier, likes from photos';
+        const sqlQuery = 'SELECT id, fichier, likes from photos';
         const sqlResult = await client.query(sqlQuery);
         console.log(sqlResult.rows);
 
-        const fichiersImage = sqlResult.rows.map(row => row['fichier']);
-        console.log(fichiersImage);
-
         //Si la requête est un succès, on renvoie la première ligne du résultat
-        let pageHTML = "<!DOCTYPE html><html><body>";
-        pageHTML += '<h1>Mur d\'images</h1>';
-        pageHTML += '<div><a href="/image-description.html">Décrire une image</a></div>';
-        for (let i = 0 ; i < fichiersImage.length ; i++) {
-          const fichierSmallImage = fichiersImage[i].split('.')[0] + '_small.jpg';
-          const img = '<img src='+fichierSmallImage+'"/public" />';
-          pageHTML += '<a href="/image/'+(i+1)+'" >' + img + '</a>';
-        }
-        pageHTML += "</body></html>";
-        res.end(pageHTML);
+        let pageHTML = '<a href="/image-description.html">Décrire une image</a>';
+
+        sqlResult.rows.forEach((img) => {
+          pageHTML += `
+            <a href="/image${img['id']}" >
+              <img 
+                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg" 
+                alt="Image ${img['id']}" 
+              />
+            </a>
+          `;
+        });
+
+        res.end(createPage(pageHTML, 'Mur d\'images'));
       } catch (e) {
         console.log(e);
-        //Si la requête échoue, on renvoie un message d'erreur
         res.end(e);
       }
     } else {
