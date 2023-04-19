@@ -96,18 +96,17 @@ server.on('request', async (req, res) => {
       */
 
       try {
-        const sqlQuery = 'SELECT id, fichier, likes from photos';
-        const sqlResult = await client.query(sqlQuery);
-        console.log(sqlResult.rows);
+        const queryPhotos = 'SELECT id, fichier from photos';
+        const photos = await client.query(queryPhotos);
 
-        //Si la requête est un succès, on renvoie la première ligne du résultat
         let pageHTML = '<a href="/image-description.html">Décrire une image</a>';
 
-        sqlResult.rows.forEach((img) => {
+        photos.rows.forEach((img) => {
+          const fileName = img['fichier'].split('.')[0];
           pageHTML += `
-            <a href="/image${img['id']}" >
+            <a href="/${fileName}" >
               <img 
-                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg" 
+                src="./public/images/${fileName}_small.jpg" 
                 alt="Image ${img['id']}" 
               />
             </a>
