@@ -83,7 +83,7 @@ server.on('request', async (req, res) => {
           <img src="./public/images/${image['fichier']}" alt="${description}">
           <p class="name">${image['nom']}</p>
           <p class="photographer">${photographer['prenom']} ${photographer['nom']}</p>
-          ${description? `<p class="description">${description}</p>` : ''}
+          ${description? `<p class="description">"${description}"</p>` : ''}
         </div>
         <div class="images-navigator">`;
 

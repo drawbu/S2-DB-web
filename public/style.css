@@ -164,14 +164,24 @@ main > .image > img {
 
 main > .image > p {
   text-align: center;
+  font-family: var(--monospace-font);
+}
+
+main > .image > p.name {
   font-size: 32px;
   text-transform: uppercase;
-  font-family: var(--monospace-font);
 }
 
 main > .image > p.photographer {
   font-size: 24px;
   text-transform: none;
+}
+
+main > .image > p.description {
+  margin-top: 16px;
+  opacity: .5;
+  font-size: 24px;
+  font-style: italic;
 }
 
 main > .images-navigator {
