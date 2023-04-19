@@ -169,6 +169,11 @@ main > .image > p {
   font-family: var(--monospace-font);
 }
 
+main > .image > p.photographer {
+  font-size: 24px;
+  text-transform: none;
+}
+
 main > .images-navigator {
   display: flex;
   width: 100%;

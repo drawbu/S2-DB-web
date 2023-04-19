@@ -59,25 +59,33 @@ server.on('request', async (req, res) => {
                .replace('.html', '')
       );
 
-      const query = await client.query(`
+      const queryImage = await client.query(`
         SELECT id, fichier, nom, id_photographe from photos
         WHERE id = ${image_id};
       `);
 
-      if (query.rows.length === 0) {
+      if (queryImage.rows.length === 0) {
         res.end(create404ErrorPage(req.url));
         return;
       }
 
-      const image = query.rows[0];
+      const image = queryImage.rows[0];
 
-      const description = (descriptions[image_id]) ? descriptions[image_id] : `Image ${image_id}`;
+      const queryPhotographer = await client.query(`
+        SELECT id, nom, prenom from photographes
+        WHERE id = ${image['id_photographe']};
+      `);
+      const photographer = queryPhotographer.rows[0];
+
+      const description = descriptions[image_id];
 
       let HTMLPage = `
         <a href="/" class="button">Accueil</a>
         <div class="image">
           <img src="./public/images/${image['fichier']}" alt="${description}">
-          <p class="description">${description}</p>
+          <p class="name">${image['nom']}</p>
+          <p class="photographer">${photographer['prenom']} ${photographer['nom']}</p>
+          ${description? `<p class="description">${description}</p>` : ''}
         </div>
         <div class="images-navigator">`;
 
