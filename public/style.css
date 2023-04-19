@@ -109,17 +109,17 @@ main > .img-row {
 
 
 /* All images page */
-main > .images-container {
+main > .images-grid {
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  grid-gap: 16px;
 }
 
-main > .images-container > div {
+main > .images-grid > a {
   display: flex;
-  justify-content: space-between;
-}
-
-main > .images-container > div > span > p {
-  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Error page */
