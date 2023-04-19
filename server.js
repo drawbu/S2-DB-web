@@ -106,12 +106,17 @@ server.on('request', async (req, res) => {
             photographers[photographer['id']] = photographer;
         });
 
-        let pageHTML = '<a href="/image-description.html">Décrire une image</a>';
+        let HTMLPage = `
+        <div class="buttons center">
+          <a href="/" class="button">accueil</a>
+          <a href="/image-description" class="button">Ajouter une description</a>
+        </div>
+        <div class="images-grid">`;
 
         photos.rows.forEach((img) => {
           const fileName = img['fichier'].split('.')[0];
           const photographer = photographers[img['id_photographe']];
-          pageHTML += `
+          HTMLPage += `
             <a href="/${fileName}" >
               <img 
                 src="./public/images/${fileName}_small.jpg" 
@@ -120,8 +125,9 @@ server.on('request', async (req, res) => {
             </a>
           `;
         });
+        HTMLPage += '</div>';
 
-        res.end(createPage(pageHTML, 'Mur d\'images'));
+        res.end(createPage(HTMLPage, 'Mur d\'images'));
       } catch (e) {
         console.log(e);
         res.end(e);
