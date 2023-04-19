@@ -150,12 +150,14 @@ server.on('request', async (req, res) => {
 
         photos.rows.forEach((img) => {
           const photographer = photographers[img['id_photographe']];
+          const description = descriptions[img['id']];
           HTMLPage += `
             <a href="/image${img['id']}" >
               <img
                 src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
                 alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
               />
+              ${description? `<p class="description">"${description}"</p>` : ''}
             </a>
           `;
         });

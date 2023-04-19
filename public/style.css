@@ -118,9 +118,18 @@ main > .images-grid {
 
 main > .images-grid > a {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: black;
+  text-decoration: none;
 }
+
+main > .images-grid > a > p.description {
+  font-style: italic;
+  opacity: .5;
+}
+
 
 /* Error page */
 main > .error {
