@@ -100,3 +100,21 @@ const HTML = createPage(page, 'my cool website');
 res.end(HTML);
 // This sends the HTML to the client.
 ```
+
+### Database
+
+The database is a PostgreSQL database. It contains 3 tables: `commentaires`,
+`orientations`, `photographes` and `photos`.
+
+
+### Routes
+
+- `/` (GET): The index page
+- `/{file}` (GET): The static file on *./{file}*
+- `/{html_document}` (GET): The HTML document on *./static/{html_document}.html*
+- `/all-images` or `/mur-images` (GET): The register page
+- `/image{id}` (GET): The image page
+- `{invalid}` (GET): The 404 page
+
+
+- `/image-description` (POST): The route to add a description to an image
