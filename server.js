@@ -176,13 +176,13 @@ server.on('request', async (req, res) => {
     if (req.url === '/image-description') {
       /* Get values sent from the form on ./public/image-description.html */
 
-      let donnees = '';
-      req.on("data", (data) => {
-        donnees += data.toString();
+      let data = '';
+      req.on("data", (event_data) => {
+        data += event_data.toString().replace(/\+/g, ' ');
       });
       req.on("end", () => {
-        console.log({donnees});
-        const paramValeur = donnees.split("&");
+        console.log({ data });
+        const paramValeur = decodeURIComponent(data).split("&");
         const index = paramValeur[0].split("=")[1];
         const description = paramValeur[1].split("=")[1];
         descriptions[index] = description;
