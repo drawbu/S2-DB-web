@@ -96,7 +96,7 @@ server.on('request', async (req, res) => {
       */
 
       try {
-        const queryPhotos = 'SELECT fichier, nom, id_photographe from photos';
+        const queryPhotos = 'SELECT id, fichier, nom, id_photographe from photos';
         const photos = await client.query(queryPhotos);
 
         const queryPhotographers = 'SELECT id, nom, prenom from photographes';
@@ -114,13 +114,12 @@ server.on('request', async (req, res) => {
         <div class="images-grid">`;
 
         photos.rows.forEach((img) => {
-          const fileName = img['fichier'].split('.')[0];
           const photographer = photographers[img['id_photographe']];
           HTMLPage += `
-            <a href="/${fileName}" >
-              <img 
-                src="./public/images/${fileName}_small.jpg" 
-                alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}" 
+            <a href="/image${img['id']}" >
+              <img
+                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+                alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
               />
             </a>
           `;
