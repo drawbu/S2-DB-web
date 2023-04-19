@@ -13,9 +13,7 @@ const descriptions = {};
 
 // Database
 const client = new Client({
-    //user: 'postgres',
-    //password: 'root',
-    database: 'photo', // Mettre le nom de votre base de données !!
+    database: 'photo',
     port : process.env.UID
 });
 client.connect()
