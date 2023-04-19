@@ -54,34 +54,63 @@ server.on('request', async (req, res) => {
     } else if (req.url.startsWith('/image')) {
       /* /imageN shows a unique page for the image number N */
 
-      const index = parseInt(
+      const image_id = parseInt(
         req.url.replace('/image', '')
                .replace('.html', '')
       );
 
-      const description = (descriptions[index]) ? descriptions[index] : `Image ${index}`;
+      const query = await client.query(`
+        SELECT id, fichier, nom, id_photographe from photos
+        WHERE id = ${image_id};
+      `);
+
+      if (query.rows.length === 0) {
+        res.end(create404ErrorPage(req.url));
+        return;
+      }
+
+      const image = query.rows[0];
+
+      const description = (descriptions[image_id]) ? descriptions[image_id] : `Image ${image_id}`;
 
       let HTMLPage = `
         <a href="/" class="button">Accueil</a>
         <div class="image">
-          <img src="./public/images/image${index}.jpg" alt="${description}">
+          <img src="./public/images/${image['fichier']}" alt="${description}">
           <p class="description">${description}</p>
         </div>
         <div class="images-navigator">`;
 
-      if (fs.existsSync(`./public/images/image${index - 1}.jpg`)) {
+      const queryPrevious = await client.query(`
+        SELECT id, fichier, nom, id_photographe from photos
+        WHERE id = ${image_id - 1};
+      `);
+      if (queryPrevious.rows.length > 0) {
+        const img = queryPrevious.rows[0];
         HTMLPage += `
-          <a href="/image${index - 1}">
-            <img src="./public/images/image${index - 1}_small.jpg" alt="Image ${index - 1}">
+          <a href="/image${img['id']}">
+            <img
+              src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+              alt="Image ${img['id'] - 1}"
+            >
           </a>`;
       } else {
         HTMLPage += `<div></div>`;
       }
 
-      if (fs.existsSync(`./public/images/image${index + 1}.jpg`)) {
+      const queryNext = await client.query(`
+        SELECT id, fichier, nom, id_photographe from photos
+        WHERE id = ${image_id + 1};
+      `);
+      if (queryNext.rows.length > 0) {
+        const img = queryNext.rows[0];
+
         HTMLPage += `
-          <a href="/image${index + 1}">
-            <img src="./public/images/image${index + 1}_small.jpg" alt="Image ${index + 1}">
+          <a href="/image${img['id']}">
+            <img
+              src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+              alt="Image ${img['id'] + 1}"
+            >
           </a>`;
       } else {
         HTMLPage += `<div></div>`;
@@ -177,14 +206,14 @@ function createPage(content, title) {
       <div id="app">
         <main>
           ${title? `<h1>${title}</h1>` : ''}
-          
+
          ${content}
-         
+
         </main>
         <footer>
           <p>
-            Site créé par <a href="https://github.com/drawbu">Clément Boillot</a> 
-            dans le cadre du cours de “Développement Web et bases de données” à 
+            Site créé par <a href="https://github.com/drawbu">Clément Boillot</a>
+            dans le cadre du cours de “Développement Web et bases de données” à
             <a href="https://www.u-bordeaux.fr">l'Université de Bordeaux</a>.
           </p>
         </footer>
