@@ -1,12 +1,33 @@
+// Libraries
+const { Client } = require('pg');
 const fs = require('fs');
 const http = require('http');
 
+// HTTP Server
 const host = 'localhost';
 const port = 8080;
 const server = http.createServer();
+
+// Variables
 const descriptions = {};
 
-server.on('request', (req, res) => {
+// Database
+const client = new Client({
+    //user: 'postgres',
+    //password: 'root',
+    database: 'photo', // Mettre le nom de votre base de données !!
+    port : process.env.UID
+});
+client.connect()
+      .then(() => {
+        console.log('Connected to database');
+      }).catch((e) => {
+        console.log('Error connecting to database', e);
+        process.exit(1);
+      });
+
+
+server.on('request', async (req, res) => {
   if (req.method === "GET") {
     if (req.url === '/') {
       /* / is the index and display the content of ./index/index.html */
@@ -107,6 +128,31 @@ server.on('request', (req, res) => {
         }
       }
       res.end(createPage(HTMLPage, 'Mur d\'images'));
+    } else if (req.url === '/mur-images') {
+      try {
+        const sqlQuery = 'SELECT fichier, likes from photos';
+        const sqlResult = await client.query(sqlQuery);
+        console.log(sqlResult.rows);
+
+        const fichiersImage = sqlResult.rows.map(row => row['fichier']);
+        console.log(fichiersImage);
+
+        //Si la requête est un succès, on renvoie la première ligne du résultat
+        let pageHTML = "<!DOCTYPE html><html><body>";
+        pageHTML += '<h1>Mur d\'images</h1>';
+        pageHTML += '<div><a href="/image-description.html">Décrire une image</a></div>';
+        for (let i = 0 ; i < fichiersImage.length ; i++) {
+          const fichierSmallImage = fichiersImage[i].split('.')[0] + '_small.jpg';
+          const img = '<img src='+fichierSmallImage+'"/public" />';
+          pageHTML += '<a href="/image/'+(i+1)+'" >' + img + '</a>';
+        }
+        pageHTML += "</body></html>";
+        res.end(pageHTML);
+      } catch (e) {
+        console.log(e);
+        //Si la requête échoue, on renvoie un message d'erreur
+        res.end(e);
+      }
     } else {
       /* If file/path does not exist, redirect to /error */
 
