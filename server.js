@@ -166,7 +166,7 @@ server.on('request', async (req, res) => {
         res.end(createPage(HTMLPage, 'Mur d\'images'));
       } catch (e) {
         console.log(e);
-        res.end(e);
+        res.end(createErrorPage(500, "Erreur serveur", e));
       }
     } else {
       /* If file/path does not exist, redirect to /error */
