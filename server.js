@@ -233,19 +233,18 @@ function createPage(content, title) {
 function create404ErrorPage(url) {
   return createErrorPage(
     404,
+    'Page non trouvée',
     `La page ou fichier "${url}" n'a pas été trouvé. <br>
     Elle a surement été renommée ou supprimée et est temporairement indisponible.`
   );
 }
 
-function createErrorPage(error, message) {
+function createErrorPage(error, message, description) {
   const HTMLPage = `
     <div class="error">
-      <p class="code">${error}</p>
-      <p class="message">Page non trouvé</p>
-      <p class="description">
-        ${message}
-      </p>
+      <p class="code">${error ? error : 500}</p>
+      <p class="message">${message ? message : 'Une erreur est survenue'}</p>
+      ${description ? ('<p class="description">' + description + '</p>') : ''}
       <a href="/" class="button">Accueil</a>
     </div>`;
   return createPage(HTMLPage);
