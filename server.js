@@ -29,12 +29,20 @@ server.on('request', async (req, res) => {
   if (req.method === "GET") {
     try {
       if (req.url === '/') {
-        /* / is the index and display the content of ./index/index.html */
+        /*
+        GET /
+
+        Displays ./public/index.html
+        */
 
         const index = fs.readFileSync('./public/index.html', 'utf-8');
         res.end(index);
       } else if (fs.existsSync(`.${req.url}`)) {
-        /* /bar/foo.html --> renders ./bar/foo.html, if the file exists */
+        /*
+        GET /{file}
+
+        Returns ./{file} if it exists
+        */
 
         const filename = `.${req.url}`;
         let file;
@@ -46,12 +54,21 @@ server.on('request', async (req, res) => {
         }
         res.end(file);
       } else if (fs.existsSync(`./public${req.url}.html`)) {
-        /* /foo_bar --> renders ./public/foo_bar.html, if the file exists */
+        /*
+        GET /{html_document_name}
+
+        Displays ./public/{html_document_name}.html, if the file exists
+        */
 
         const file = fs.readFileSync(`./public${req.url}.html`, 'utf-8');
         res.end(file);
       } else if (req.url.startsWith('/image')) {
-        /* /imageN shows a unique page for the image number N */
+        /*
+        GET /image{id}
+
+        Displays the image with the primary key {id} on the database, its name,
+        its photographer and its description if it exists.
+        */
 
         const image_id = parseInt(
           req.url.replace('/image', '')
@@ -125,10 +142,11 @@ server.on('request', async (req, res) => {
         res.end(createPage(HTMLPage));
       } else if (req.url === '/all-images' || req.url === '/mur-images') {
         /*
-        /all-images
-        /mur-images
+        GET /all-images
+        GET /mur-images
 
-        Displays all the stored images in ./public/images as a grid.
+        Displays all the stored images in the table "photos" of the database.
+        Shows also the description of the image if it exists.
         */
 
         const queryPhotos = 'SELECT id, fichier, nom, id_photographe from photos';
@@ -165,7 +183,12 @@ server.on('request', async (req, res) => {
 
         res.end(createPage(HTMLPage, 'Mur d\'images'));
       } else {
-        /* If file/path does not exist, redirect to /error */
+        /*
+        GET /{any_other_path}
+
+        Every path that is not handled by the server will return a 404 error page.
+        */
+
         res.end(create404ErrorPage(req.url));
       }
     } catch (e) {
@@ -175,7 +198,13 @@ server.on('request', async (req, res) => {
     }
   } else if (req.method === 'POST') {
     if (req.url === '/image-description') {
-      /* Get values sent from the form on ./public/image-description.html */
+      /*
+      POST /image-description
+
+      Get values sent from the form on ./public/image-description.html and
+      store them in the descriptions object. Then, create a page to confirm
+      that the description has been added.
+      */
 
       let data = '';
       req.on("data", (event_data) => {
