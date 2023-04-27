@@ -163,14 +163,18 @@ server.on('request', async (req, res) => {
         <div class="buttons center">
           <a href="/" class="button">accueil</a>
           <a href="/image-description" class="button">Ajouter une description</a>
+          <button class="button" id="layout-btn">
+            <span>Layout</span>
+            <span class="description">Current: grid</span>
+          </button>
         </div>
-        <div class="images-grid">`;
+        <div id="images-grid" class="grid">`;
 
         photos.rows.forEach((img) => {
           const photographer = photographers[img['id_photographe']];
           const description = descriptions[img['id']];
           HTMLPage += `
-            <a href="/image${img['id']}" >
+            <a href="/image${img['id']}" class="image">
               <img
                 src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
                 alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
@@ -181,7 +185,9 @@ server.on('request', async (req, res) => {
         });
         HTMLPage += '</div>';
 
-        res.end(createPage(HTMLPage, 'Mur d\'images'));
+        const head = `<script src="./public/mur.js" defer></script>`;
+
+        res.end(createPage(HTMLPage, 'Mur d\'images', head));
       } else {
         /*
         GET /{any_other_path}
@@ -230,7 +236,7 @@ server.on('request', async (req, res) => {
   }
 })
 
-function createPage(content, title) {
+function createPage(content, title = undefined, head = undefined) {
   return `<!DOCTYPE html>
     <html lang="fr">
     <head>
@@ -239,6 +245,7 @@ function createPage(content, title) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="./public/style.css">
       <title>Clément Boillot - ${title}</title>
+      ${head? head : ''}
     </head>
     <body>
       <div id="app">

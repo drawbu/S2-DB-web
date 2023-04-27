@@ -43,7 +43,8 @@ a:hover {
 }
 
 a.button,
-input[type=submit].button {
+input[type=submit].button,
+button.button {
   all: unset;
   margin: 16px;
   box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px var(--main-color);
@@ -57,12 +58,24 @@ input[type=submit].button {
   cursor: pointer;
   text-align: center;
   font-family: var(--monospace-font);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: fit-content;
 }
 
 a.button:hover,
-input.button:hover {
+input[type=submit].button:hover,
+button.button:hover {
   background-color: var(--main-color);
   box-shadow: 0 0 0 2px var(--main-color), 2px 2px 0 2px var(--main-color)
+}
+
+button > span.description {
+  font-size: 12px;
+  opacity: .5;
+  text-transform: none;
+  font-family: var(--monospace-font);
 }
 
 .buttons {
@@ -71,6 +84,7 @@ input.button:hover {
   flex-direction: row;
   margin-top: 32px;
   margin-bottom: 32px;
+  align-items: center;
 }
 
 .buttons.center {
@@ -109,14 +123,17 @@ main > .img-row {
 
 
 /* All images page */
-main > .images-grid {
+#images-grid {
   width: 100%;
+}
+
+#images-grid.grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(200px, 1fr));
   grid-gap: 16px;
 }
 
-main > .images-grid > a {
+#images-grid > a {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -125,7 +142,7 @@ main > .images-grid > a {
   text-decoration: none;
 }
 
-main > .images-grid > a > p.description {
+#images-grid > a.image > p.description {
   font-style: italic;
   opacity: .5;
 }
