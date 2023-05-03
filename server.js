@@ -170,7 +170,8 @@ server.on('request', async (req, res) => {
         </div>
         <div id="images-grid" class="grid">`;
 
-        photos.rows.forEach((img) => {
+        for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
+          const img = photos.rows[i];
           const photographer = photographers[img['id_photographe']];
           const description = descriptions[img['id']];
           HTMLPage += `
@@ -182,7 +183,7 @@ server.on('request', async (req, res) => {
               ${description ? `<p class="description">"${description}"</p>` : ''}
             </a>
           `;
-        });
+        }
         HTMLPage += '</div>';
 
         const head = `<script src="./public/mur.js" defer></script>`;
