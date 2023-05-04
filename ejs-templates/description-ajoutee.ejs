@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body>
+  <div id="app">
+    <main>
+      <h1>Description ajoutée</h1>
+      <div class="buttons center">
+        <a href="/" class="button">Accueil</a>
+        <a href="/all-images" class="button">Mur d'images</a>
+      </div>
+      <p>Le commentaire "<%= description %>" a été rajouté à l'image numéro <%= index %>.</p>
+    </main>
+    <%- include('../partials/footer'); %>
+  </div>
+</body>
+</html>

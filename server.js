@@ -126,6 +126,28 @@ app.get('*', (req, res) => {
   });
 })
 
+app.post('/image-description', (req, res) => {
+  /*
+  * Get values sent from the form on ./public/image-description.html and store
+  * them in the descriptions object. Then, create a page to confirm that the
+  * description has been added.
+  * */
+
+  let data = '';
+  req.on("data", (event_data) => {
+    data += event_data.toString().replace(/\+/g, ' ');
+  });
+  req.on("end", () => {
+    console.log({data});
+    const paramValeur = decodeURIComponent(data).split("&");
+    const index = paramValeur[0].split("=")[1];
+    const description = paramValeur[1].split("=")[1];
+    descriptions[index] = description;
+    res.statusCode = 200;
+    res.render('description-ajoutee', { description, index });
+  })
+})
+
 app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}/`);
 });
