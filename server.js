@@ -69,73 +69,42 @@ app.get('/image:id', async (req, res) => {
   its photographer and its description if it exists.
   */
 
-  const image_id = parseInt(req.params.id);
+  const imageId = parseInt(req.params.id);
 
   const queryImage = await client.query(`
-    SELECT id, fichier, nom, id_photographe from photos
-    WHERE id = ${image_id};
+    SELECT img.id, img.fichier, img.id_photographe, img.nom,
+           pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
+    FROM photos img
+    INNER JOIN photographes pgr ON img.id_photographe = pgr.id
+    WHERE img.id = ${imageId};
   `);
 
   if (queryImage.rows.length === 0) {
-    res.end(create404ErrorPage(req.url));
+    res.render('error', {
+      error: 404,
+      message: 'Page non trouvée',
+      description: `La page ou fichier "${req.url}" n'a pas été trouvé. <br>
+        Elle a surement été renommée ou supprimée et est temporairement indisponible.`
+    });
     return;
   }
 
   const image = queryImage.rows[0];
+  const description = descriptions[imageId];
 
-  const queryPhotographer = await client.query(`
-    SELECT id, nom, prenom from photographes
-    WHERE id = ${image['id_photographe']};
+  const queryPrev = await client.query(`
+    SELECT id, fichier FROM photos
+    WHERE id = ${imageId - 1};
   `);
-  const photographer = queryPhotographer.rows[0];
-
-  const description = descriptions[image_id];
-
-  let HTMLPage = `
-    <a href="/" class="button">Accueil</a>
-    <div class="image">
-      <img src="./public/images/${image['fichier']}" alt="${description}">
-      <p class="name">${image['nom']}</p>
-      <p class="photographer">${photographer['prenom']} ${photographer['nom']}</p>
-      ${description ? `<p class="description">"${description}"</p>` : ''}
-    </div>
-    <div class="images-navigator">`;
-
-  const queryPrevious = await client.query(`
-    SELECT id, fichier, nom, id_photographe from photos
-    WHERE id = ${image_id - 1};
-  `);
-  if (queryPrevious.rows.length > 0) {
-    const img = queryPrevious.rows[0];
-    HTMLPage += `
-      <a href="/image${img['id']}">
-        <img
-          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-          alt="Image ${img['id'] - 1}"
-        >
-      </a>`;
-  } else {
-    HTMLPage += `<div></div>`;
-  }
+  const prev = (queryPrev.rows.length > 0) ? queryPrev.rows[0] : undefined
 
   const queryNext = await client.query(`
-    SELECT id, fichier, nom, id_photographe from photos
-    WHERE id = ${image_id + 1};
+    SELECT id, fichier FROM photos
+    WHERE id = ${imageId + 1};
   `);
-  if (queryNext.rows.length > 0) {
-    const img = queryNext.rows[0];
+  const next = (queryNext.rows.length > 0) ? queryNext.rows[0] : undefined
 
-    HTMLPage += `
-      <a href="/image${img['id']}">
-        <img
-          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-          alt="Image ${img['id'] + 1}"
-        >
-      </a>`;
-  } else {
-    HTMLPage += `<div></div>`;
-  }
-  res.end(createPage(HTMLPage));
+  res.render('image', { image, description, prev, next })
 })
 
 function createPage(content, title = undefined, head = undefined) {

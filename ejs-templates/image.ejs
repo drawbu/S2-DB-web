@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body>
+  <div id="app">
+    <main>
+      <a href="/" class="button">Accueil</a>
+      <div class="image">
+        <img src="/public/images/<%= image['fichier'] %>" alt="Image <%= image['id'] %>">
+        <p class="name"><%= image['nom'] %></p>
+        <p class="photographer"><%= image['prenom_photographe'] %> <%= image['nom_photographe'] %></p>
+        <% if (description) {%>
+          <p class="description">"<%= description %>"</p>
+        <% } %>
+      </div>
+      <div class="images-navigator">
+        <% if (prev) { %>
+          <a href="/image<%= prev['id'] %>">
+            <img
+              src="/public/images/<%= prev['fichier'].split('.')[0] %>_small.jpg"
+              alt="Image <%= prev['id'] %>"
+            >
+          </a>
+        <% } else { %>
+          <div></div>
+        <% } %>
+        <% if (next) { %>
+          <a href="/image<%= next['id'] %>">
+            <img
+              src="/public/images/<%= next['fichier'].split('.')[0] %>_small.jpg"
+              alt="Image <%= next['id'] %>"
+            >
+          </a>
+        <% } else { %>
+          <div></div>
+        <% } %>
+      </div>
+    </main>
+    <%- include('../partials/footer'); %>
+  </div>
+</body>
+</html>
