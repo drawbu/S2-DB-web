@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body>
+  <div id="app">
+    <main>
+      <div class="error">
+        <p class="code"><%= (typeof error != 'undefined') ? error : 500 %></p>
+        <p class="message"><%= (typeof message != 'undefined') ? message : 'Une erreur est survenue' %></p>
+        <% if (typeof description != 'undefined') { %>
+          <p class="description"><%= description %></p>
+        <% } %>
+        <a href="/" class="button">Accueil</a>
+      </div>`;
+    </main>
+    <%- include('../partials/footer'); %>
+  </div>
+</body>
+</html>
