@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./public/style.css">
+  <title>Clément Boillot - Mur d'images</title>
+  <script src="./public/mur.js" defer></script>
+</head>
+<body>
+  <div id="app">
+    <main>
+      <div class="buttons center">
+        <a href="/" class="button">accueil</a>
+        <a href="/image-description" class="button">Ajouter une description</a>
+        <button class="button" id="layout-btn">
+          <span>Layout</span>
+          <span class="description">Current: grid</span>
+        </button>
+      </div>
+      <div id="images-grid" class="grid">
+        <%
+        for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
+          const img = photos.rows[i];
+          const description = descriptions[img['id']];
+          console.log(img)
+        %>
+          <a href="/image<%= img['id'] %>" class="image">
+            <img
+              src="./public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
+              alt=""
+            />
+            <% if (description) { %>
+              <p class="description"><%= description %>"</p>`
+            <% } %>
+          </a>
+        <% } %>
+      </div>
+    </main>
+    <footer>
+      <p>
+        Site créé par <a href="https://github.com/drawbu">Clément Boillot</a>
+        dans le cadre du cours de “Développement Web et bases de données” à
+        <a href="https://www.u-bordeaux.fr">l'Université de Bordeaux</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

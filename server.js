@@ -30,6 +30,9 @@ client.connect()
 
 // All requests starting with /public return the matching file in ./public
 app.use('/public', express.static('./public'));
+// Init ejs
+app.set('view engine', 'ejs');
+app.set('views', './ejs-templates');
 
 app.get('/', (_, res) => {
     res.redirect('/public/index.html');
@@ -53,46 +56,11 @@ app.get('/mur-images', async (req, res) => {
   Shows also the description of the image if it exists.
   */
 
-  const queryPhotos = 'SELECT id, fichier, nom, id_photographe from photos';
-  const photos = await client.query(queryPhotos);
+  const photos = await client.query(
+    'SELECT id, fichier, nom, id_photographe from photos'
+  );
 
-  const queryPhotographers = 'SELECT id, nom, prenom from photographes';
-  const photographersResult = await client.query(queryPhotographers);
-  const photographers = {};
-  photographersResult.rows.forEach((photographer) => {
-    photographers[photographer['id']] = photographer;
-  });
-
-  let HTMLPage = `
-  <div class="buttons center">
-    <a href="/" class="button">accueil</a>
-    <a href="/image-description" class="button">Ajouter une description</a>
-    <button class="button" id="layout-btn">
-      <span>Layout</span>
-      <span class="description">Current: grid</span>
-    </button>
-  </div>
-  <div id="images-grid" class="grid">`;
-
-  for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
-    const img = photos.rows[i];
-    const photographer = photographers[img['id_photographe']];
-    const description = descriptions[img['id']];
-    HTMLPage += `
-      <a href="/image${img['id']}" class="image">
-        <img
-          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-          alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
-        />
-        ${description ? `<p class="description">"${description}"</p>` : ''}
-      </a>
-    `;
-  }
-  HTMLPage += '</div>';
-
-  const head = `<script src="./public/mur.js" defer></script>`;
-
-  res.end(createPage(HTMLPage, 'Mur d\'images', head));
+  res.render('mur', { photos, descriptions});
 });
 
 app.get('/image:id', async (req, res) => {
