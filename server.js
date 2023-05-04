@@ -1,12 +1,12 @@
 // Libraries
+const fs = require("fs");
+const express = require('express');
 const { Client } = require('pg');
-const fs = require('fs');
-const http = require('http');
 
 // HTTP Server
 const host = 'localhost';
 const port = 8080;
-const server = http.createServer();
+const app = express();
 
 // Variables
 const descriptions = {};
@@ -16,6 +16,8 @@ const client = new Client({
     database: 'photo',
     port : process.env.UID
 });
+
+//Connection à la base de données
 client.connect()
       .then(() => {
         console.log('Connected to database');
@@ -24,217 +26,148 @@ client.connect()
         process.exit(1);
       });
 
+// Routes
 
-server.on('request', async (req, res) => {
-  if (req.method === "GET") {
-    try {
-      if (req.url === '/') {
-        /*
-        GET /
+// All requests starting with /public return the matching file in ./public
+app.use('/public', express.static('./public'));
 
-        Displays ./public/index.html
-        */
+app.get('/', (_, res) => {
+    res.redirect('/public/index.html');
+});
 
-        const index = fs.readFileSync('./public/index.html', 'utf-8');
-        res.end(index);
-      } else if (fs.existsSync(`.${req.url}`)) {
-        /*
-        GET /{file}
+app.get('/index', (_, res) => {
+    res.redirect('/public/index.html');
+});
 
-        Returns ./{file} if it exists
-        */
+app.get('/index.html', (_, res) => {
+    res.redirect('/public/index.html');
+});
 
-        const filename = `.${req.url}`;
-        let file;
+app.get('/all-images', (_, res) => {
+    res.redirect('/mur-images');
+});
 
-        if (filename.endsWith('.html') || filename.endsWith('.css')) {
-          file = fs.readFileSync(filename, 'utf-8');
-        } else {
-          file = fs.readFileSync(filename);
-        }
-        res.end(file);
-      } else if (fs.existsSync(`./public${req.url}.html`)) {
-        /*
-        GET /{html_document_name}
+app.get('/mur-images', async (req, res) => {
+  /*
+  Displays all the stored images in the table "photos" of the database.
+  Shows also the description of the image if it exists.
+  */
 
-        Displays ./public/{html_document_name}.html, if the file exists
-        */
+  const queryPhotos = 'SELECT id, fichier, nom, id_photographe from photos';
+  const photos = await client.query(queryPhotos);
 
-        const file = fs.readFileSync(`./public${req.url}.html`, 'utf-8');
-        res.end(file);
-      } else if (req.url.startsWith('/image')) {
-        /*
-        GET /image{id}
+  const queryPhotographers = 'SELECT id, nom, prenom from photographes';
+  const photographersResult = await client.query(queryPhotographers);
+  const photographers = {};
+  photographersResult.rows.forEach((photographer) => {
+    photographers[photographer['id']] = photographer;
+  });
 
-        Displays the image with the primary key {id} on the database, its name,
-        its photographer and its description if it exists.
-        */
+  let HTMLPage = `
+  <div class="buttons center">
+    <a href="/" class="button">accueil</a>
+    <a href="/image-description" class="button">Ajouter une description</a>
+    <button class="button" id="layout-btn">
+      <span>Layout</span>
+      <span class="description">Current: grid</span>
+    </button>
+  </div>
+  <div id="images-grid" class="grid">`;
 
-        const image_id = parseInt(
-          req.url.replace('/image', '')
-            .replace('.html', '')
-        );
-
-        const queryImage = await client.query(`
-          SELECT id, fichier, nom, id_photographe from photos
-          WHERE id = ${image_id};
-        `);
-
-        if (queryImage.rows.length === 0) {
-          res.end(create404ErrorPage(req.url));
-          return;
-        }
-
-        const image = queryImage.rows[0];
-
-        const queryPhotographer = await client.query(`
-          SELECT id, nom, prenom from photographes
-          WHERE id = ${image['id_photographe']};
-        `);
-        const photographer = queryPhotographer.rows[0];
-
-        const description = descriptions[image_id];
-
-        let HTMLPage = `
-          <a href="/" class="button">Accueil</a>
-          <div class="image">
-            <img src="./public/images/${image['fichier']}" alt="${description}">
-            <p class="name">${image['nom']}</p>
-            <p class="photographer">${photographer['prenom']} ${photographer['nom']}</p>
-            ${description ? `<p class="description">"${description}"</p>` : ''}
-          </div>
-          <div class="images-navigator">`;
-
-        const queryPrevious = await client.query(`
-          SELECT id, fichier, nom, id_photographe from photos
-          WHERE id = ${image_id - 1};
-        `);
-        if (queryPrevious.rows.length > 0) {
-          const img = queryPrevious.rows[0];
-          HTMLPage += `
-            <a href="/image${img['id']}">
-              <img
-                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-                alt="Image ${img['id'] - 1}"
-              >
-            </a>`;
-        } else {
-          HTMLPage += `<div></div>`;
-        }
-
-        const queryNext = await client.query(`
-          SELECT id, fichier, nom, id_photographe from photos
-          WHERE id = ${image_id + 1};
-        `);
-        if (queryNext.rows.length > 0) {
-          const img = queryNext.rows[0];
-
-          HTMLPage += `
-            <a href="/image${img['id']}">
-              <img
-                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-                alt="Image ${img['id'] + 1}"
-              >
-            </a>`;
-        } else {
-          HTMLPage += `<div></div>`;
-        }
-        res.end(createPage(HTMLPage));
-      } else if (req.url === '/all-images' || req.url === '/mur-images') {
-        /*
-        GET /all-images
-        GET /mur-images
-
-        Displays all the stored images in the table "photos" of the database.
-        Shows also the description of the image if it exists.
-        */
-
-        const queryPhotos = 'SELECT id, fichier, nom, id_photographe from photos';
-        const photos = await client.query(queryPhotos);
-
-        const queryPhotographers = 'SELECT id, nom, prenom from photographes';
-        const photographersResult = await client.query(queryPhotographers);
-        const photographers = {};
-        photographersResult.rows.forEach((photographer) => {
-          photographers[photographer['id']] = photographer;
-        });
-
-        let HTMLPage = `
-        <div class="buttons center">
-          <a href="/" class="button">accueil</a>
-          <a href="/image-description" class="button">Ajouter une description</a>
-          <button class="button" id="layout-btn">
-            <span>Layout</span>
-            <span class="description">Current: grid</span>
-          </button>
-        </div>
-        <div id="images-grid" class="grid">`;
-
-        for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
-          const img = photos.rows[i];
-          const photographer = photographers[img['id_photographe']];
-          const description = descriptions[img['id']];
-          HTMLPage += `
-            <a href="/image${img['id']}" class="image">
-              <img
-                src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
-                alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
-              />
-              ${description ? `<p class="description">"${description}"</p>` : ''}
-            </a>
-          `;
-        }
-        HTMLPage += '</div>';
-
-        const head = `<script src="./public/mur.js" defer></script>`;
-
-        res.end(createPage(HTMLPage, 'Mur d\'images', head));
-      } else {
-        /*
-        GET /{any_other_path}
-
-        Every path that is not handled by the server will return a 404 error page.
-        */
-
-        res.end(create404ErrorPage(req.url));
-      }
-    } catch (e) {
-      /* If an error occurs, create a 500 error page */
-      console.log(e);
-      res.end(createErrorPage(500, "Erreur serveur", e));
-    }
-  } else if (req.method === 'POST') {
-    if (req.url === '/image-description') {
-      /*
-      POST /image-description
-
-      Get values sent from the form on ./public/image-description.html and
-      store them in the descriptions object. Then, create a page to confirm
-      that the description has been added.
-      */
-
-      let data = '';
-      req.on("data", (event_data) => {
-        data += event_data.toString().replace(/\+/g, ' ');
-      });
-      req.on("end", () => {
-        console.log({ data });
-        const paramValeur = decodeURIComponent(data).split("&");
-        const index = paramValeur[0].split("=")[1];
-        const description = paramValeur[1].split("=")[1];
-        descriptions[index] = description;
-        res.statusCode = 200;
-
-        let HTMLPage = `
-          <div class="buttons center">
-            <a href="/" class="button">Accueil</a>
-            <a href="/all-images" class="button">Mur d'images</a>
-          </div>
-          <p>Le commentaire "${description}" a été rajouté à l'image numéro ${index}.</p>`
-        res.end(createPage(HTMLPage, 'Description ajoutée'));
-      })
-    }
+  for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
+    const img = photos.rows[i];
+    const photographer = photographers[img['id_photographe']];
+    const description = descriptions[img['id']];
+    HTMLPage += `
+      <a href="/image${img['id']}" class="image">
+        <img
+          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+          alt="${img['nom']} par ${photographer['prenom']} ${photographer['nom']}"
+        />
+        ${description ? `<p class="description">"${description}"</p>` : ''}
+      </a>
+    `;
   }
+  HTMLPage += '</div>';
+
+  const head = `<script src="./public/mur.js" defer></script>`;
+
+  res.end(createPage(HTMLPage, 'Mur d\'images', head));
+});
+
+app.get('/image:id', async (req, res) => {
+  /*
+  Displays the image with the primary key {id} on the database, its name,
+  its photographer and its description if it exists.
+  */
+
+  const image_id = parseInt(req.params.id);
+
+  const queryImage = await client.query(`
+    SELECT id, fichier, nom, id_photographe from photos
+    WHERE id = ${image_id};
+  `);
+
+  if (queryImage.rows.length === 0) {
+    res.end(create404ErrorPage(req.url));
+    return;
+  }
+
+  const image = queryImage.rows[0];
+
+  const queryPhotographer = await client.query(`
+    SELECT id, nom, prenom from photographes
+    WHERE id = ${image['id_photographe']};
+  `);
+  const photographer = queryPhotographer.rows[0];
+
+  const description = descriptions[image_id];
+
+  let HTMLPage = `
+    <a href="/" class="button">Accueil</a>
+    <div class="image">
+      <img src="./public/images/${image['fichier']}" alt="${description}">
+      <p class="name">${image['nom']}</p>
+      <p class="photographer">${photographer['prenom']} ${photographer['nom']}</p>
+      ${description ? `<p class="description">"${description}"</p>` : ''}
+    </div>
+    <div class="images-navigator">`;
+
+  const queryPrevious = await client.query(`
+    SELECT id, fichier, nom, id_photographe from photos
+    WHERE id = ${image_id - 1};
+  `);
+  if (queryPrevious.rows.length > 0) {
+    const img = queryPrevious.rows[0];
+    HTMLPage += `
+      <a href="/image${img['id']}">
+        <img
+          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+          alt="Image ${img['id'] - 1}"
+        >
+      </a>`;
+  } else {
+    HTMLPage += `<div></div>`;
+  }
+
+  const queryNext = await client.query(`
+    SELECT id, fichier, nom, id_photographe from photos
+    WHERE id = ${image_id + 1};
+  `);
+  if (queryNext.rows.length > 0) {
+    const img = queryNext.rows[0];
+
+    HTMLPage += `
+      <a href="/image${img['id']}">
+        <img
+          src="./public/images/${img['fichier'].split('.')[0]}_small.jpg"
+          alt="Image ${img['id'] + 1}"
+        >
+      </a>`;
+  } else {
+    HTMLPage += `<div></div>`;
+  }
+  res.end(createPage(HTMLPage));
 })
 
 function createPage(content, title = undefined, head = undefined) {
@@ -288,6 +221,6 @@ function createErrorPage(error, message, description) {
   return createPage(HTMLPage);
 }
 
-server.listen(port, host, () => {
-  console.log(`Server running at http://${host}:${port}/`);
+app.listen(port, host, () => {
+    console.log(`Server running at http://${host}:${port}/`);
 });
