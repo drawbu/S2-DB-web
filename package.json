@@ -2,10 +2,10 @@
   "name": "db-web",
   "version": "1.0.0",
   "description": "",
-  "main": "Sujet/example.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node Sujet/example.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",

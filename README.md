@@ -49,7 +49,7 @@ On the postgres prompt:
 
 To start the server, run
 ```shell
-node server.js
+npm run start
 ```
 
 
