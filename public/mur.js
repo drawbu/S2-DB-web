@@ -33,7 +33,7 @@ function addNextImage() {
   const images = imagesGrid.querySelectorAll('a.image');
   const lastImage = images[images.length - 1];
   const imageId = parseInt(
-    lastImage.href.replace('/image', '')
+    lastImage.href.replace('/image/', '')
                   .replace(window.location.origin, '')
   );
   if (isNaN(imageId) || imageId >= 53) {
