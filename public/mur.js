@@ -42,7 +42,7 @@ function addNextImage() {
   }
   const nextImage = lastImage.cloneNode(true);
   const imageThumbnail = nextImage.querySelector('img');
-  nextImage.href = `/image${imageId + 1}`;
+  nextImage.href = `/image/${imageId + 1}`;
   imageThumbnail.alt = `Image ${imageId + 1}`;
   imageThumbnail.src = `./public/images/image${imageId + 1}_small.jpg`;
   imagesGrid.appendChild(nextImage);

@@ -63,7 +63,7 @@ app.get('/mur-images', async (req, res) => {
   res.render('mur', { photos, descriptions});
 });
 
-app.get('/image:id', async (req, res) => {
+app.get('/image/:id', async (req, res) => {
   /*
   Displays the image with the primary key {id} on the database, its name,
   its photographer and its description if it exists.

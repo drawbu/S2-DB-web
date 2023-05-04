@@ -17,7 +17,7 @@
       </div>
       <div class="images-navigator">
         <% if (prev) { %>
-          <a href="/image<%= prev['id'] %>">
+          <a href="/image/<%= prev['id'] %>">
             <img
               src="/public/images/<%= prev['fichier'].split('.')[0] %>_small.jpg"
               alt="Image <%= prev['id'] %>"
@@ -27,7 +27,7 @@
           <div></div>
         <% } %>
         <% if (next) { %>
-          <a href="/image<%= next['id'] %>">
+          <a href="/image/<%= next['id'] %>">
             <img
               src="/public/images/<%= next['fichier'].split('.')[0] %>_small.jpg"
               alt="Image <%= next['id'] %>"
