@@ -38,14 +38,6 @@ app.get('/', (_, res) => {
     res.redirect('/public/index.html');
 });
 
-app.get('/index', (_, res) => {
-    res.redirect('/public/index.html');
-});
-
-app.get('/index.html', (_, res) => {
-    res.redirect('/public/index.html');
-});
-
 app.get('/all-images', (_, res) => {
     res.redirect('/mur-images');
 });
@@ -109,9 +101,22 @@ app.get('/image/:id', async (req, res) => {
 
 app.get('*', (req, res) => {
   /*
-  * If the router could not respond to the requests, it does this route to
-  * generate an 404 error page.
+  * If the router could not respond to the requests, check if the request
+  * correspond to a file following these patterns and redirect:
+  * - /public{req.url}.html
+  * - /public{req.url}
+  * If not, render an 404 error page.
   * */
+
+  if (fs.existsSync('./public' + req.url + '.html')) {
+    res.redirect('/public' + req.url + '.html')
+    return;
+  }
+
+  if (fs.existsSync('./public' + req.url)) {
+    res.redirect('/public' + req.url)
+    return;
+  }
 
   res.render('error', {
     error: 404,
