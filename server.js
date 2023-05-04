@@ -107,6 +107,20 @@ app.get('/image:id', async (req, res) => {
   res.render('image', { image, description, prev, next })
 })
 
+app.get('*', (req, res) => {
+  /*
+  * If the router could not respond to the requests, it does this route to
+  * generate an 404 error page.
+  * */
+
+  res.render('error', {
+    error: 404,
+    message: 'Page non trouvée',
+    description: `La page ou fichier "${req.url}" n'a pas été trouvé. <br>
+      Elle a surement été renommée ou supprimée et est temporairement indisponible.`
+  });
+})
+
 function createPage(content, title = undefined, head = undefined) {
   return `<!DOCTYPE html>
     <html lang="fr">
