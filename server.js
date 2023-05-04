@@ -121,57 +121,6 @@ app.get('*', (req, res) => {
   });
 })
 
-function createPage(content, title = undefined, head = undefined) {
-  return `<!DOCTYPE html>
-    <html lang="fr">
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="./public/style.css">
-      <title>Clément Boillot - ${title}</title>
-      ${head? head : ''}
-    </head>
-    <body>
-      <div id="app">
-        <main>
-          ${title? `<h1>${title}</h1>` : ''}
-
-         ${content}
-
-        </main>
-        <footer>
-          <p>
-            Site créé par <a href="https://github.com/drawbu">Clément Boillot</a>
-            dans le cadre du cours de “Développement Web et bases de données” à
-            <a href="https://www.u-bordeaux.fr">l'Université de Bordeaux</a>.
-          </p>
-        </footer>
-      </div>
-    </body>
-    </html>`;
-}
-
-function create404ErrorPage(url) {
-  return createErrorPage(
-    404,
-    'Page non trouvée',
-    `La page ou fichier "${url}" n'a pas été trouvé. <br>
-    Elle a surement été renommée ou supprimée et est temporairement indisponible.`
-  );
-}
-
-function createErrorPage(error, message, description) {
-  const HTMLPage = `
-    <div class="error">
-      <p class="code">${error ? error : 500}</p>
-      <p class="message">${message ? message : 'Une erreur est survenue'}</p>
-      ${description ? ('<p class="description">' + description + '</p>') : ''}
-      <a href="/" class="button">Accueil</a>
-    </div>`;
-  return createPage(HTMLPage);
-}
-
 app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}/`);
 });
