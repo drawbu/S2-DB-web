@@ -59,6 +59,15 @@ app.get('/image/:id', async (req, res) => {
 
   const imageId = parseInt(req.params.id);
 
+  if (isNaN(imageId)) {
+    res.render('error', {
+      error: 400,
+      message: 'Mauvais format de l\'id',
+      description: `L'id "${req.params.id}" n'est pas un nombre.`
+    });
+    return;
+  }
+
   const queryImage = await client.query(`
     SELECT img.id, img.fichier, img.id_photographe, img.nom,
            pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
