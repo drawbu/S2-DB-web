@@ -57,49 +57,12 @@ npm run start
 
 ### Server Side Rendering
 
-All the pages except the index page are generated server side. This is done to
-generate the HTML dynamically, and to avoid having to write the same HTML code
-over and over again (it also allows the user to access the website even if
-JavaScript is disabled).
+All the pages except the index and the `/image-description` page are generated
+server side with [ejs](#ejs). This is done to generate the HTML dynamically, and
+to avoid having to write the same HTML code over and over again (it also allows
+the user to access the website even if JavaScript is disabled).
 
-The router uses a simple if else statement to determine which page to render.
-
-Example:
-```js
-if (req.url === '/') {
-  // Render the index page
-} else if (fs.existsSync(`.${req.url}`)) {
-  // Render the static file
-} else if (req.url === '/all-images') {
-  // Render the register page
-} else if (req.url.startsWith('/image')) {
-  // Render the profile page
-} else {
-  // Render the 404 page
-}
-```
-
-All Server Side Rendered pages are generated using the `createPage` function to
-avoid repetition of the header and the footer all over the pages.
-
-Example:
-```js
-const user = {
-  name: 'John Doe',
-  age: 42,
-};
-const page = `<p>Hello ${user.name}.<p>`;
-// This is the content of the page
-
-const HTML = createPage(page, 'my cool website');
-// This creates a page with the header and the footer.
-// "my cool website" is the title of the page and will be displayed in the tab,
-// and in a <h1> tag on top of the page.
-// This will also create a <head> and a <body> tag, import the CSS files, etc.
-
-res.end(HTML);
-// This sends the HTML to the client.
-```
+The router is the default router from express.
 
 ### Database
 
@@ -118,3 +81,15 @@ The database is a PostgreSQL database. It contains 3 tables: `commentaires`,
 
 
 - `/image-description` (POST): The route to add a description to an image
+
+
+### EJS
+
+[ejs](https://ejs.co) is a front-end framework with simple syntax and allow to
+use plain Javascript and HTML.
+
+It is used in the project to generate the HTML pages dynamically.
+
+All the pages uses the partials `head.ejs` and `footer.ejs` to avoid having to
+write the same code over and over again. Its basically just a header with the
+correct meta tags and a footer with some text.
