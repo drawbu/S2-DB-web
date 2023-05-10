@@ -79,9 +79,10 @@ app.get('/image/:id', async (req, res) => {
   if (queryImage.rows.length === 0) {
     res.render('error', {
       error: 404,
-      message: 'Page non trouvée',
-      description: `La page ou fichier "${req.url}" n'a pas été trouvé. <br>
-        Elle a surement été renommée ou supprimée et est temporairement indisponible.`
+      message: 'Image non trouvée',
+      description: `L'image avec l'id "${req.url}" n'a pas été trouvé dans la
+        base de données. Le fichier existe peut-être mais n'a pas été ajouté
+        à la base de données.`
     });
     return;
   }
@@ -126,8 +127,9 @@ app.get('*', (req, res) => {
   res.render('error', {
     error: 404,
     message: 'Page non trouvée',
-    description: `La page ou fichier "${req.url}" n'a pas été trouvé. <br>
-      Elle a surement été renommée ou supprimée et est temporairement indisponible.`
+    description: `La page ou fichier "${req.url}" n'a pas été trouvé.
+      Elle a surement été renommée ou supprimée et est temporairement
+      indisponible.`
   });
 })
 
