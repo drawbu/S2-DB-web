@@ -38,11 +38,7 @@ app.get('/', (_, res) => {
     res.redirect('/public/index.html');
 });
 
-app.get('/all-images', (_, res) => {
-    res.redirect('/mur-images');
-});
-
-app.get('/mur-images', async (req, res) => {
+app.get(/\/mur-images|\/all-images/, async (req, res) => {
   /*
   Displays all the stored images in the table "photos" of the database.
   Shows also the description of the image if it exists.
