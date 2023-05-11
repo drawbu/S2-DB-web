@@ -18,11 +18,11 @@
       </div>
       <div id="images-grid" class="grid">
         <%
-        for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
+        for (let i = 0; i < photos.rows.length; i++) {
           const img = photos.rows[i];
           const description = descriptions[img['id']];
         %>
-          <a href="/image/<%= img['id'] %>" class="image">
+          <a href="/image/<%= img['id'] %>" class="image hidden">
             <img
               src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
               alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"

@@ -17,35 +17,26 @@ layoutButton.addEventListener('click', () => {
 
 // Load more images when the user is close to the bottom of the page
 window.addEventListener('scroll', () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    addNextImage();
-  }
+  addNextImage();
 });
 
-// Fill the window if the client can't scroll
 const interval = setInterval(() => {
-  if (window.innerHeight === document.body.offsetHeight) {
-    addNextImage();
-  }
-}, 100);
-
-function addNextImage() {
-  const images = imagesGrid.querySelectorAll('a.image');
-  const lastImage = images[images.length - 1];
-  const imageId = parseInt(
-    lastImage.href.replace('/image/', '')
-                  .replace(window.location.origin, '')
-  );
-  if (isNaN(imageId) || imageId >= 53) {
+  if (document.body.offsetHeight - 100 > window.innerHeight) {
     clearInterval(interval);
     return;
   }
-  const nextImage = lastImage.cloneNode(true);
-  const imageThumbnail = nextImage.querySelector('img');
-  nextImage.href = `/image/${imageId + 1}`;
-  imageThumbnail.alt = `Image ${imageId + 1}`;
-  imageThumbnail.src = `./public/images/image${imageId + 1}_small.jpg`;
-  imagesGrid.appendChild(nextImage);
+  addNextImage();
+}, 100);
+
+
+function addNextImage() {
+  const hiddenImages = imagesGrid.querySelectorAll('a.image.hidden');
+  if (hiddenImages.length === 0) {
+    return;
+  }
+  const lastImage = hiddenImages[0];
+  lastImage.style.display = 'block';
+  lastImage.classList.remove('hidden');
 }
 
-
+addNextImage()
