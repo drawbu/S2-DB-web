@@ -145,7 +145,6 @@ app.post('/image-description', (req, res) => {
     data += event_data.toString().replace(/\+/g, ' ');
   });
   req.on("end", () => {
-    console.log({data});
     const paramValeur = decodeURIComponent(data).split("&");
     const index = paramValeur[0].split("=")[1];
     const description = paramValeur[1].split("=")[1];
