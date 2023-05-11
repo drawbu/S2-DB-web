@@ -44,9 +44,12 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
   Shows also the description of the image if it exists.
   */
 
-  const photos = await client.query(
-    'SELECT id, fichier, nom, id_photographe from photos'
-  );
+  const photos = await client.query(`
+    SELECT photos.id, photos.fichier, photos.id_photographe, photos.nom,
+    pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
+    FROM photos
+    INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
+  `);
 
   res.render('mur', { photos, descriptions});
 });

@@ -25,10 +25,10 @@
           <a href="/image/<%= img['id'] %>" class="image">
             <img
               src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
-              alt=""
+              alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"
             />
             <% if (description) { %>
-              <p class="description"><%= description %></p>`
+              <p class="description"><%= description %></p>
             <% } %>
           </a>
         <% } %>
