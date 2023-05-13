@@ -39,3 +39,23 @@ function addNextImage() {
 }
 
 addNextImage()
+
+imagesGrid.querySelectorAll('div.image').forEach(image => {
+  const id = image.dataset.value;
+  const likeDiv = image.querySelector('div.likes')
+  const button = likeDiv.querySelector('button');
+  const text = likeDiv.querySelector('p');
+
+  button.addEventListener('click', () => like(id, button, text))
+})
+
+function like(imageId, button, text) {
+  fetch(`/j-aime/${imageId}`)
+    .then(res => {
+      if (!res || !res.ok) {
+        return;
+      }
+      text.textContent = `${(parseInt(text.textContent) + 1)} likes`;
+      button.style.display = 'none';
+    });
+}

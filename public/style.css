@@ -149,13 +149,30 @@ main > .img-row {
 
 #images-grid > .image > * {
   display: flex;
-  margin: auto;
+  margin: 0 auto;
   width: fit-content;
 }
 
 #images-grid > .image > p.description {
   font-style: italic;
   opacity: .5;
+}
+
+#images-grid > .image > .likes {
+  gap: 5px;
+  align-items: center;
+}
+
+#images-grid > .image > .likes > button {
+  background: none;
+  border: transparent 1px solid;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+#images-grid > .image > .likes > button:hover {
+  cursor: pointer;
+  border-color: black;
 }
 
 

@@ -45,7 +45,7 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
   */
 
   const photos = await client.query(`
-    SELECT photos.id, photos.fichier, photos.id_photographe, photos.nom,
+    SELECT photos.id, photos.fichier, photos.id_photographe, photos.nom, photos.likes,
     pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
     FROM photos
     INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
@@ -108,6 +108,36 @@ app.get('/image/:id', async (req, res) => {
 
   res.render('image', { image, description, prev, next })
 })
+
+app.get('/j-aime/:id', async (req, res) => {
+  const imageId = parseInt(req.params.id);
+
+  if (isNaN(imageId)) {
+    res.statusCode = 400;
+    res.end();
+    return;
+  }
+
+  const queryImage = await client.query(`
+    SELECT likes FROM photos
+    WHERE id = ${imageId};
+  `);
+
+  if (queryImage.rows.length === 0) {
+    res.statusCode = 404;
+    res.end();
+    return;
+  }
+
+  await client.query(`
+    UPDATE photos
+    SET likes = ${queryImage.rows[0]['likes'] + 1}
+    WHERE id = ${imageId};
+  `);
+
+  res.statusCode = 201;
+  res.end();
+});
 
 app.get('*', (req, res) => {
   /*

@@ -22,7 +22,7 @@
           const img = photos.rows[i];
           const description = descriptions[img['id']];
         %>
-          <div class="image hidden">
+          <div data-value="<%= img['id'] %>" class="image hidden">
             <a href="/image/<%= img['id'] %>" class="image">
               <img
                 src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
@@ -32,6 +32,10 @@
             <% if (description) { %>
               <p class="description"><%= description %></p>
             <% } %>
+            <div class="likes">
+              <p><%= img['likes'] %> likes</p>
+              <button>👍</button>
+            </div>
           </div>
         <% } %>
       </div>
