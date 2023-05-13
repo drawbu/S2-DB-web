@@ -44,12 +44,21 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
   Shows also the description of the image if it exists.
   */
 
+  const sortByParams = {
+    'id': 'photos.id',
+    'date': 'photos.date',
+    'likes': 'photos.likes',
+    'photographe': 'photos.id_photographe',
+    'orientation': 'photos.orientation',
+  }
+
   const photos = await client.query(`
-    SELECT photos.id, photos.fichier, photos.id_photographe, photos.nom, photos.likes,
-    pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
+    SELECT photos.id, photos.fichier, photos.id_photographe,
+           photos.nom, photos.likes, photos.orientation,
+           pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
     FROM photos
     INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
-    ORDER BY photos.id;
+    ORDER BY ${sortByParams[req.query['sortby']] || sortByParams['id']};
   `);
 
   res.render('mur', { photos, descriptions});
