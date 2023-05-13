@@ -59,3 +59,12 @@ function like(imageId, button, text) {
       button.style.display = 'none';
     });
 }
+
+const url = new URL(document.URL);
+const select = document.getElementById('sort');
+select.value = url.searchParams.get('sortby') || 'id'
+
+select.addEventListener('change', (_) => {
+  url.searchParams.set('sortby', select.value);
+  window.location.href = url.toString();
+})

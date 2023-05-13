@@ -15,6 +15,16 @@
           <span>Layout</span>
           <span class="description">Current: grid</span>
         </button>
+        <div class="button">
+          <label for="sort">Trier par</label>
+          <select id="sort">
+            <option value="id" selected>id</option>
+            <option value="date">date de création</option>
+            <option value="likes">nombre de likes</option>
+            <option value="photographe">photographe</option>
+            <option value="orientation">orientation</option>
+          </select>
+        </div>
       </div>
       <div id="images-grid" class="grid">
         <%
