@@ -1,5 +1,5 @@
 // Libraries
-const fs = require("fs");
+const fs = require('fs');
 const express = require('express');
 const { Client } = require('pg');
 
@@ -13,18 +13,18 @@ const descriptions = {};
 
 // Database
 const client = new Client({
-    database: 'photo',
-    port : process.env.UID
+  database: 'photo',
+  port : process.env.UID
 });
 
 //Connection à la base de données
 client.connect()
-      .then(() => {
-        console.log('Connected to database');
-      }).catch((e) => {
-        console.log('Error connecting to database', e);
-        process.exit(1);
-      });
+  .then(() => {
+    console.log('Connected to database');
+  }).catch((e) => {
+    console.log('Error connecting to database', e);
+    process.exit(1);
+  });
 
 // Routes
 
@@ -35,7 +35,7 @@ app.set('view engine', 'ejs');
 app.set('views', './ejs-templates');
 
 app.get('/', (_, res) => {
-    res.redirect('/public/index.html');
+  res.redirect('/public/index.html');
 });
 
 app.get(/\/mur-images|\/all-images/, async (req, res) => {
@@ -50,7 +50,7 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
     'likes': 'photos.likes',
     'photographe': 'photos.id_photographe',
     'orientation': 'photos.orientation',
-  }
+  };
 
   const photos = await client.query(`
     SELECT photos.id, photos.fichier, photos.id_photographe,
@@ -107,16 +107,16 @@ app.get('/image/:id', async (req, res) => {
     SELECT id, fichier FROM photos
     WHERE id = ${imageId - 1};
   `);
-  const prev = (queryPrev.rows.length > 0) ? queryPrev.rows[0] : undefined
+  const prev = (queryPrev.rows.length > 0) ? queryPrev.rows[0] : undefined;
 
   const queryNext = await client.query(`
     SELECT id, fichier FROM photos
     WHERE id = ${imageId + 1};
   `);
-  const next = (queryNext.rows.length > 0) ? queryNext.rows[0] : undefined
+  const next = (queryNext.rows.length > 0) ? queryNext.rows[0] : undefined;
 
-  res.render('image', { image, description, prev, next })
-})
+  res.render('image', { image, description, prev, next });
+});
 
 app.get('/j-aime/:id', async (req, res) => {
   const imageId = parseInt(req.params.id);
@@ -158,12 +158,12 @@ app.get('*', (req, res) => {
   * */
 
   if (fs.existsSync('./public' + req.url + '.html')) {
-    res.redirect('/public' + req.url + '.html')
+    res.redirect('/public' + req.url + '.html');
     return;
   }
 
   if (fs.existsSync('./public' + req.url)) {
-    res.redirect('/public' + req.url)
+    res.redirect('/public' + req.url);
     return;
   }
 
@@ -174,7 +174,7 @@ app.get('*', (req, res) => {
       Elle a surement été renommée ou supprimée et est temporairement
       indisponible.`
   });
-})
+});
 
 app.post('/image-description', (req, res) => {
   /*
@@ -184,19 +184,19 @@ app.post('/image-description', (req, res) => {
   * */
 
   let data = '';
-  req.on("data", (event_data) => {
+  req.on('data', (event_data) => {
     data += event_data.toString().replace(/\+/g, ' ');
   });
-  req.on("end", () => {
-    const paramValeur = decodeURIComponent(data).split("&");
-    const index = paramValeur[0].split("=")[1];
-    const description = paramValeur[1].split("=")[1];
+  req.on('end', () => {
+    const paramValeur = decodeURIComponent(data).split('&');
+    const index = paramValeur[0].split('=')[1];
+    const description = paramValeur[1].split('=')[1];
     descriptions[index] = description;
     res.statusCode = 200;
     res.render('description-ajoutee', { description, index });
-  })
-})
+  });
+});
 
 app.listen(port, host, () => {
-    console.log(`Server running at http://${host}:${port}/`);
+  console.log(`Server running at http://${host}:${port}/`);
 });

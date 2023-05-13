@@ -38,16 +38,16 @@ function addNextImage() {
   lastImage.classList.remove('hidden');
 }
 
-addNextImage()
+addNextImage();
 
 imagesGrid.querySelectorAll('div.image').forEach(image => {
   const id = image.dataset.value;
-  const likeDiv = image.querySelector('div.likes')
+  const likeDiv = image.querySelector('div.likes');
   const button = likeDiv.querySelector('button');
   const text = likeDiv.querySelector('p');
 
-  button.addEventListener('click', () => like(id, button, text))
-})
+  button.addEventListener('click', () => like(id, button, text));
+});
 
 function like(imageId, button, text) {
   fetch(`/j-aime/${imageId}`)
@@ -62,9 +62,9 @@ function like(imageId, button, text) {
 
 const url = new URL(document.URL);
 const select = document.getElementById('sort');
-select.value = url.searchParams.get('sortby') || 'id'
+select.value = url.searchParams.get('sortby') || 'id';
 
-select.addEventListener('change', (_) => {
+select.addEventListener('change', () => {
   url.searchParams.set('sortby', select.value);
   window.location.href = url.toString();
-})
+});
