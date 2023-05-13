@@ -42,9 +42,7 @@ a:hover {
   text-decoration-color: cornflowerblue;
 }
 
-a.button,
-input[type=submit].button,
-button.button {
+.button {
   all: unset;
   margin: 16px;
   box-shadow: 0 0 0 2px #000000, 2px 2px 0 2px var(--main-color);
@@ -55,7 +53,6 @@ button.button {
   transition-duration: .2s;
   text-decoration: none;
   box-sizing: border-box;
-  cursor: pointer;
   text-align: center;
   font-family: var(--monospace-font);
   display: flex;
@@ -64,9 +61,8 @@ button.button {
   height: fit-content;
 }
 
-a.button:hover,
-input[type=submit].button:hover,
-button.button:hover {
+.button:hover:not(div) {
+  cursor: pointer;
   background-color: var(--main-color);
   box-shadow: 0 0 0 2px var(--main-color), 2px 2px 0 2px var(--main-color)
 }
