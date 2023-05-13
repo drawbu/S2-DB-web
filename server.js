@@ -49,6 +49,7 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
     pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
     FROM photos
     INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
+    ORDER BY photos.id;
   `);
 
   res.render('mur', { photos, descriptions});
