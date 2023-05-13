@@ -2,7 +2,7 @@ const layoutButton = document.getElementById('layout-btn');
 const imagesGrid = document.getElementById('images-grid');
 
 layoutButton.addEventListener('click', () => {
-  const images = imagesGrid.querySelectorAll('a.image');
+  const images = imagesGrid.querySelectorAll('div.image');
   if (imagesGrid.classList.contains('grid')) {
     imagesGrid.classList.remove('grid');
   }
@@ -30,7 +30,7 @@ const interval = setInterval(() => {
 
 
 function addNextImage() {
-  const hiddenImages = imagesGrid.querySelectorAll('a.image.hidden');
+  const hiddenImages = imagesGrid.querySelectorAll('div.image.hidden');
   if (hiddenImages.length === 0) {
     return;
   }

@@ -22,15 +22,17 @@
           const img = photos.rows[i];
           const description = descriptions[img['id']];
         %>
-          <a href="/image/<%= img['id'] %>" class="image hidden">
-            <img
-              src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
-              alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"
-            />
+          <div class="image hidden">
+            <a href="/image/<%= img['id'] %>" class="image">
+              <img
+                src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
+                alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"
+              />
+            </a>
             <% if (description) { %>
               <p class="description"><%= description %></p>
             <% } %>
-          </a>
+          </div>
         <% } %>
       </div>
     </main>

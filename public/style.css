@@ -133,7 +133,7 @@ main > .img-row {
   grid-gap: 16px;
 }
 
-#images-grid > a.image {
+#images-grid > .image {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,11 +142,11 @@ main > .img-row {
   text-decoration: none;
 }
 
-#images-grid > a.image.hidden {
+#images-grid > .image.hidden {
   display: none;
 }
 
-#images-grid > a.image > p.description {
+#images-grid > .image > p.description {
   font-style: italic;
   opacity: .5;
 }
