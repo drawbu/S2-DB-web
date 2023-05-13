@@ -146,6 +146,12 @@ main > .img-row {
   display: none;
 }
 
+#images-grid > .image > * {
+  display: flex;
+  margin: auto;
+  width: fit-content;
+}
+
 #images-grid > .image > p.description {
   font-style: italic;
   opacity: .5;
