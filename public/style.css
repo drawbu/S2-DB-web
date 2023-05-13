@@ -133,11 +133,12 @@ main > .img-row {
   grid-gap: 16px;
 }
 
-#images-grid > .image {
+#images-grid.grid > .image {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+}
+
+#images-grid > .image {
   color: black;
   text-decoration: none;
 }
