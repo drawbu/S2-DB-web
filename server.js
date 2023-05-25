@@ -8,9 +8,6 @@ const host = 'localhost';
 const port = 8080;
 const app = express();
 
-// Variables
-const descriptions = {};
-
 // Database
 const client = new Client({
   database: 'photo',
@@ -55,13 +52,15 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
   const photos = await client.query(`
     SELECT photos.id, photos.fichier, photos.id_photographe,
            photos.nom, photos.likes, photos.orientation,
-           pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
+           pgr.nom AS nom_photographe, pgr.prenom AS prenom_photographe,
+           com.id_photo, com.texte AS description
     FROM photos
     INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
+    LEFT JOIN commentaires com ON com.id_photo = photos.id
     ORDER BY ${sortByParams[req.query['sortby']] || sortByParams['id']};
   `);
 
-  res.render('mur', { photos, descriptions});
+  res.render('mur', { photos });
 });
 
 app.get('/image/:id', async (req, res) => {
@@ -83,9 +82,11 @@ app.get('/image/:id', async (req, res) => {
 
   const queryImage = await client.query(`
     SELECT img.id, img.fichier, img.id_photographe, img.nom,
-           pgr.nom as nom_photographe, pgr.prenom as prenom_photographe
+           pgr.nom as nom_photographe, pgr.prenom as prenom_photographe,
+           com.id_photo, com.texte AS description
     FROM photos img
     INNER JOIN photographes pgr ON img.id_photographe = pgr.id
+    LEFT JOIN commentaires com ON com.id_photo = img.id
     WHERE img.id = ${imageId};
   `);
 
@@ -101,7 +102,6 @@ app.get('/image/:id', async (req, res) => {
   }
 
   const image = queryImage.rows[0];
-  const description = descriptions[imageId];
 
   const queryPrev = await client.query(`
     SELECT id, fichier FROM photos
@@ -115,7 +115,7 @@ app.get('/image/:id', async (req, res) => {
   `);
   const next = (queryNext.rows.length > 0) ? queryNext.rows[0] : undefined;
 
-  res.render('image', { image, description, prev, next });
+  res.render('image', { image, prev, next });
 });
 
 app.get('/j-aime/:id', async (req, res) => {
@@ -187,13 +187,32 @@ app.post('/image-description', (req, res) => {
   req.on('data', (event_data) => {
     data += event_data.toString().replace(/\+/g, ' ');
   });
-  req.on('end', () => {
+  req.on('end', async () => {
     const paramValeur = decodeURIComponent(data).split('&');
     const index = paramValeur[0].split('=')[1];
-    const description = paramValeur[1].split('=')[1];
-    descriptions[index] = description;
+    const texte = paramValeur[1].split('=')[1];
+
+    const queryCommentaire = await client.query(`
+      SELECT id_photo
+      FROM commentaires
+      WHERE id_photo = ${index};
+    `);
+
+    if (queryCommentaire.rows.length === 0) {
+      await client.query(`
+        INSERT INTO commentaires (texte, id_photo)
+        VALUES ('${texte}', '${index}');
+      `);
+    } else {
+      await client.query(`
+        UPDATE commentaires
+        SET texte = '${texte}'
+        WHERE id_photo = ${index}
+      `);
+    }
+
     res.statusCode = 200;
-    res.render('description-ajoutee', { description, index });
+    res.render('description-ajoutee', {description: texte, index});
   });
 });
 

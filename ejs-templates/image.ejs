@@ -11,8 +11,8 @@
         <img src="/public/images/<%= image['fichier'] %>" alt="Image <%= image['id'] %>">
         <p class="name"><%= image['nom'] %></p>
         <p class="photographer"><%= image['prenom_photographe'] %> <%= image['nom_photographe'] %></p>
-        <% if (description) {%>
-          <p class="description">"<%= description %>"</p>
+        <% if (image['description']) { %>
+          <p class="description">"<%= image['description'] %>"</p>
         <% } %>
       </div>
       <div class="images-navigator">

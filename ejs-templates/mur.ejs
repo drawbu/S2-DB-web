@@ -30,7 +30,6 @@
         <%
         for (let i = 0; i < photos.rows.length; i++) {
           const img = photos.rows[i];
-          const description = descriptions[img['id']];
         %>
           <div data-value="<%= img['id'] %>" class="image hidden">
             <a href="/image/<%= img['id'] %>" class="image">
@@ -39,9 +38,7 @@
                 alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"
               />
             </a>
-            <% if (description) { %>
-              <p class="description"><%= description %></p>
-            <% } %>
+            <p class="description"><%= img['description'] %></p>
             <div class="likes">
               <p><%= img['likes'] %> likes</p>
               <button>👍</button>
