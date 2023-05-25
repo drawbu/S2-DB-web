@@ -44,7 +44,7 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
   const sortByParams = {
     'id': 'photos.id',
     'date': 'photos.date',
-    'likes': 'photos.likes',
+    'likes': 'photos.likes DESC',
     'photographe': 'photos.id_photographe',
     'orientation': 'photos.orientation',
   };
