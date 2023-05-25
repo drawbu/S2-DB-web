@@ -61,10 +61,34 @@ function like(imageId, button, text) {
 }
 
 const url = new URL(document.URL);
+
 const select = document.getElementById('sort');
 select.value = url.searchParams.get('sortby') || 'id';
-
 select.addEventListener('change', () => {
   url.searchParams.set('sortby', select.value);
   window.location.href = url.toString();
 });
+
+const paginerBtn = document.getElementById('paginer');
+if (paginerBtn) {
+  paginerBtn.addEventListener('click', () => {
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+  })
+}
+
+const nextPage = document.getElementById('next-page');
+if (nextPage) {
+  nextPage.addEventListener('click', () => {
+    url.searchParams.set('page', (parseInt(nextPage.dataset.value) + 1).toString());
+    window.location.href = url.toString();
+  })
+}
+
+const firstPage = document.getElementById('first-page');
+if (firstPage) {
+  firstPage.addEventListener('click', () => {
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+  })
+}

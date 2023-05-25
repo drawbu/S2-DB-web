@@ -48,6 +48,10 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
     'photographe': 'photos.id_photographe',
     'orientation': 'photos.orientation',
   };
+  const page = parseInt(req.query['page']) || undefined;
+  const pageQuery = (page !== undefined)
+    ? `WHERE photos.id > ${(page - 1) * 10} AND photos.id <= ${page * 10}`
+    : '';
 
   const photos = await client.query(`
     SELECT photos.id, photos.fichier, photos.id_photographe,
@@ -57,10 +61,11 @@ app.get(/\/mur-images|\/all-images/, async (req, res) => {
     FROM photos
     INNER JOIN photographes pgr ON photos.id_photographe = pgr.id
     LEFT JOIN commentaires com ON com.id_photo = photos.id
+    ${pageQuery}
     ORDER BY ${sortByParams[req.query['sortby']] || sortByParams['id']};
   `);
 
-  res.render('mur', { photos });
+  res.render('mur', { photos, page });
 });
 
 app.get('/image/:id', async (req, res) => {

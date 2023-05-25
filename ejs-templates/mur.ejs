@@ -25,6 +25,11 @@
             <option value="orientation">orientation</option>
           </select>
         </div>
+        <% if (!page) { %>
+          <button class="button" id="paginer">
+              Paginer
+          </button>
+        <% } %>
       </div>
       <div id="images-grid" class="grid">
         <%
@@ -46,6 +51,18 @@
           </div>
         <% } %>
       </div>
+      <% if (page) { %>
+        <div class="buttons center">
+          <% if (page !== 1) { %>
+            <button class="button" id="first-page">
+              Retour au début
+            </button>
+          <% } %>
+          <button class="button" id="next-page" data-value="<%= page %>">
+            Page suivante
+          </button>
+        </div>
+      <% } %>
     </main>
     <%- include('../partials/footer'); %>
   </div>
