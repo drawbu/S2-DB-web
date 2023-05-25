@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <%- include('../partials/head'); %>
-  <script src="/public/mur.js" defer></script>
+  <script src="/public/js/mur.js" defer></script>
 </head>
 <body>
   <div id="app">
@@ -15,24 +15,54 @@
           <span>Layout</span>
           <span class="description">Current: grid</span>
         </button>
+        <div class="button">
+          <label for="sort">Trier par</label>
+          <select id="sort">
+            <option value="id" selected>id</option>
+            <option value="date">date de création</option>
+            <option value="likes">nombre de likes</option>
+            <option value="photographe">photographe</option>
+            <option value="orientation">orientation</option>
+          </select>
+        </div>
+        <% if (!page) { %>
+          <button class="button" id="paginer">
+              Paginer
+          </button>
+        <% } %>
       </div>
       <div id="images-grid" class="grid">
         <%
-        for (let i = 0; i < 3 && photos.rows.length !== i; i++) {
+        for (let i = 0; i < photos.rows.length; i++) {
           const img = photos.rows[i];
-          const description = descriptions[img['id']];
         %>
-          <a href="/image/<%= img['id'] %>" class="image">
-            <img
-              src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
-              alt=""
-            />
-            <% if (description) { %>
-              <p class="description"><%= description %>"</p>`
-            <% } %>
-          </a>
+          <div data-value="<%= img['id'] %>" class="image hidden">
+            <a href="/image/<%= img['id'] %>" class="image">
+              <img
+                src="/public/images/<%= img['fichier'].split('.')[0] %>_small.jpg"
+                alt="<%= img['nom'] %>, from <%= img['nom_photographe'] %> <%= img['prenom_photographe'] %>"
+              />
+            </a>
+            <p class="description"><%= img['description'] %></p>
+            <div class="likes">
+              <p><%= img['likes'] %> likes</p>
+              <button>👍</button>
+            </div>
+          </div>
         <% } %>
       </div>
+      <% if (page) { %>
+        <div class="buttons center">
+          <% if (page !== 1) { %>
+            <button class="button" id="first-page">
+              Retour au début
+            </button>
+          <% } %>
+          <button class="button" id="next-page" data-value="<%= page %>">
+            Page suivante
+          </button>
+        </div>
+      <% } %>
     </main>
     <%- include('../partials/footer'); %>
   </div>

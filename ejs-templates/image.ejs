@@ -2,17 +2,22 @@
 <html lang="fr">
 <head>
   <%- include('../partials/head'); %>
+  <script src="/public/js/image.js" defer></script>
 </head>
 <body>
   <div id="app">
     <main>
       <a href="/" class="button">Accueil</a>
-      <div class="image">
+      <div id="image" data-value="<%= image['id'] %>">
         <img src="/public/images/<%= image['fichier'] %>" alt="Image <%= image['id'] %>">
         <p class="name"><%= image['nom'] %></p>
         <p class="photographer"><%= image['prenom_photographe'] %> <%= image['nom_photographe'] %></p>
-        <% if (description) {%>
-          <p class="description">"<%= description %>"</p>
+        <div class="likes">
+          <p><%= image['likes'] %> likes</p>
+          <button>👍</button>
+        </div>
+        <% if (image['description']) { %>
+          <p class="description">"<%= image['description'] %>"</p>
         <% } %>
       </div>
       <div class="images-navigator">
