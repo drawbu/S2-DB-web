@@ -192,6 +192,32 @@ app.post('/image-description', (req, res) => {
     const index = paramValeur[0].split('=')[1];
     const texte = paramValeur[1].split('=')[1];
 
+    if (!texte) {
+      res.render('error', {
+        error: 400,
+        message: 'La description est vide',
+        description: `On ne peut pas ajouter un commentaire vide à une image.
+          Le commentaire n'a pas été ajouté.`
+      });
+      return;
+    }
+
+    const queryImage = await client.query(`
+      SELECT id
+      FROM photos
+      WHERE id = ${index};
+    `);
+
+    if (queryImage.rows.length === 0) {
+      res.render('error', {
+        error: 404,
+        message: 'Image non trouvé',
+        description: `L'image avec l'identifiant ${index} n'a pas été trouvée.
+          Le commentaire n'a pas été ajouté.`
+      });
+      return;
+    }
+
     const queryCommentaire = await client.query(`
       SELECT id_photo
       FROM commentaires
