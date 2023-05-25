@@ -200,38 +200,65 @@ main > .error > p.description {
 
 
 /* Single image page */
-main > .image {
+#image {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-main > .image > img {
+#image > img {
   height: 500px;
   max-width: 100%;
   margin: auto;
 }
 
-main > .image > p {
+#image > p {
   text-align: center;
   font-family: var(--monospace-font);
 }
 
-main > .image > p.name {
+#image > p.name {
   font-size: 32px;
   text-transform: uppercase;
 }
 
-main > .image > p.photographer {
+#image > p.photographer {
   font-size: 24px;
   text-transform: none;
 }
 
-main > .image > p.description {
+#image > p.description {
   margin-top: 16px;
   opacity: .5;
   font-size: 24px;
   font-style: italic;
+}
+
+#image > .likes {
+  font-family: var(--monospace-font);
+  font-size: 20px;
+  display: flex;
+  margin: 0 auto;
+  width: fit-content;
+  gap: 5px;
+  align-items: center;
+}
+
+#image > .likes > p {
+  font-family: inherit;
+}
+
+#image > .likes > button {
+  font-size: inherit;
+  background: none;
+  border: transparent 1px solid;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+#image > .likes > button:hover {
+  cursor: pointer;
+  border-color: black;
 }
 
 main > .images-navigator {

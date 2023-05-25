@@ -81,7 +81,7 @@ app.get('/image/:id', async (req, res) => {
   }
 
   const queryImage = await client.query(`
-    SELECT img.id, img.fichier, img.id_photographe, img.nom,
+    SELECT img.id, img.fichier, img.id_photographe, img.nom, img.likes,
            pgr.nom as nom_photographe, pgr.prenom as prenom_photographe,
            com.id_photo, com.texte AS description
     FROM photos img
