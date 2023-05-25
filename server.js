@@ -185,7 +185,7 @@ app.post('/image-description', (req, res) => {
 
   let data = '';
   req.on('data', (event_data) => {
-    data += event_data.toString().replace(/\+/g, ' ');
+    data += event_data.toString().replace('+', ' ');
   });
   req.on('end', async () => {
     const paramValeur = decodeURIComponent(data).split('&');
