@@ -74,7 +74,7 @@ if (paginerBtn) {
   paginerBtn.addEventListener('click', () => {
     url.searchParams.set('page', '1');
     window.location.href = url.toString();
-  })
+  });
 }
 
 const nextPage = document.getElementById('next-page');
@@ -82,7 +82,7 @@ if (nextPage) {
   nextPage.addEventListener('click', () => {
     url.searchParams.set('page', (parseInt(nextPage.dataset.value) + 1).toString());
     window.location.href = url.toString();
-  })
+  });
 }
 
 const firstPage = document.getElementById('first-page');
@@ -90,5 +90,13 @@ if (firstPage) {
   firstPage.addEventListener('click', () => {
     url.searchParams.set('page', '1');
     window.location.href = url.toString();
-  })
+  });
+}
+
+const showAll = document.getElementById('show-all');
+if (showAll) {
+  showAll.addEventListener('click', () => {
+    url.searchParams.delete('page');
+    window.location.href = url.toString();
+  });
 }
